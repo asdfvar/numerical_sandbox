@@ -1,0 +1,3 @@
+[submodule "gpnc"]
+	path = gpnc
+	url = https://github.com/asdfvar/gpnc.git
