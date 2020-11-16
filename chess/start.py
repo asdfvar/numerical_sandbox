@@ -296,6 +296,28 @@ def black_moves (board, src):
          if (str (board[row-1][col]) in '0PNBRQK'): moves += [(row-1, col)]
    return moves
 
+def all_white_moves (board):
+   moves = {}
+   keys = []
+   for row in range (8):
+      for col in range (8):
+         lmoves = white_moves (board, (row, col))
+         if len (lmoves) > 0:
+            moves[(row, col)] = lmoves
+            keys.append ((row, col))
+   return keys, moves
+
+def all_black_moves (board):
+   moves = {}
+   keys = []
+   for row in range (8):
+      for col in range (8):
+         lmoves = black_moves (board, (row, col))
+         if len (lmoves) > 0:
+            moves[(row, col)] = lmoves
+            keys.append ((row, col))
+   return keys, moves
+
 state = State ()
 
 def move (board, src, dst):
@@ -307,3 +329,7 @@ print (state)
 
 print (str (white_moves (state.board, (1, 5))))
 print (str (black_moves (state.board, (6, 5))))
+
+keys, moves = all_white_moves (state.board)
+print (keys)
+print (moves)
