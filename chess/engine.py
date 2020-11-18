@@ -183,7 +183,8 @@ class Kernel:
                if valid: moves += ['O-O-O']
       return moves
 
-   def black_moves (board, src):
+   def black_moves (self, src):
+      board = self.board
       moves = []
       row = src[0]
       col = src[1]
@@ -342,7 +343,6 @@ class Kernel:
       return moves
 
    def all_white_moves (self):
-      board = self.board
       moves = []
       keys  = []
       for row in range (8):
@@ -354,7 +354,6 @@ class Kernel:
       return keys, moves
 
    def all_black_moves (self):
-      board = self.board
       moves = []
       keys  = []
       for row in range (8):
