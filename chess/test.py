@@ -2,9 +2,9 @@
 
 import engine
 
-state = engine.State ()
+state = engine.Kernel ()
 
-state.move ((0,0), (2,2))
+state.move ((1,4), (3,4))
 print (state)
 
 print (str (state.white_moves ((1, 5))))

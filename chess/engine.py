@@ -1,20 +1,25 @@
 #!/usr/bin/python3
 
-class State:
+class Kernel:
    def __init__ (self):
       self.board = [[0 for ind in range (8)] for ind in range (8)]
       self.board[0] = ['R','N','B','Q','K','B','N','R']
       self.board[1] = ['P','P','P','P','P','P','P','P']
       self.board[6] = ['p','p','p','p','p','p','p','p']
       self.board[7] = ['r','n','b','q','k','b','n','r']
-      self.Wcastle = False
-      self.Bcastle = False
+      self.White_has_castle = True
+      self.Black_has_castle = True
+      self.en_passant = False
 
    def __str__ (self):
-      display = ""
+      display = "+---+---+---+---+---+---+---+---+\n"
       for row in self.board[::-1]:
-         display += str ((row))
-         display += '\n'
+         for col in row:
+            if col == 0:
+               display += "|   "
+            else:
+               display += "| " + str (col) + " "
+         display += "|\n+---+---+---+---+---+---+---+---+\n"
       return display
 
    def white_moves (self, src):
@@ -324,8 +329,30 @@ class State:
 
    def move (self, src, dst):
       board = self.board
+      legal_moves = self.white_moves (src)
+
+      valid = False
+      if len (legal_moves) > 0:
+         for key in legal_moves:
+            if dst == key: valid = True
+      if not (valid):
+         print ("illegal move " + str (src) + " -> " + str (dst))
+         return
+
       board[dst[0]][dst[1]] = board[src[0]][src[1]]
       board[src[0]][src[1]] = 0
 
-   def analyze (self):
+      if board[dst[0]][dst[1]] == 'P' and src[0] == 1 and dst[0] == 3:
+         if dst[1] < 7 and board[dst[0]][dst[1]+1] == 'p':
+            self.en_passant = (2, src[1])
+         if dst[1] > 0 and board[dst[0]][dst[1]-1] == 'p':
+            self.en_passant = (2, src[1])
+      elif board[dst[0]][dst[1]] == 'P' and src[0] == 6 and dst[0] == 4:
+         if dst[1] < 7 and board[dst[0]][dst[1]+1] == 'p':
+            self.en_passant = (5, src[1])
+         if dst[1] > 0 and board[dst[0]][dst[1]-1] == 'p':
+            self.en_passant = (5, src[1])
+      self.en_passant = None
+
+   def white_king_under_threat (position):
       pass
