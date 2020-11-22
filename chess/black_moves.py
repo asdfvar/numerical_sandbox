@@ -159,15 +159,15 @@ def black_moves (state, src):
 
 def all_black_moves (state):
    board = state.board
-   moves = []
-   keys  = []
+   moves     = []
+   positions = []
    for row in range (8):
       for col in range (8):
          lmoves = black_moves (state, (row, col))
          if len (lmoves) > 0:
             moves.append (lmoves)
-            keys.append ((row, col))
-   return keys, moves
+            positions.append ((row, col))
+   return positions, moves
 
 def move_black (state, src, dst):
    board = state.board
@@ -196,9 +196,9 @@ def move_black (state, src, dst):
       return
 
    # Disable castling if the condition is met
-   if (src[0], src[1]) == (7, 0) and board[src[0]][src[1]] == 'r':
+   if src == (7, 0) and board[src[0]][src[1]] == 'r':
       state.wCastleAvailOOO = False
-   elif (src[0], src[1]) == (7, 7) and board[src[0]][src[1]] == 'r':
+   elif src == (7, 7) and board[src[0]][src[1]] == 'r':
       state.wCastleAvailOO = False
    if board[src[0]][src[1]] == 'k':
       state.wCastleAvailOO  = False
@@ -216,12 +216,3 @@ def move_black (state, src, dst):
       if dst[1] > 0 and board[dst[0]][dst[1]-1] == 'P':
          en_passant = (5, src[1])
    state.en_passant = en_passant
-
-def black_king_under_threat (state):
-   keys, allmoves = white_moves.all_black_moves (state)
-   for row_num, row in enumerate (state.board):
-      for col_num, element in enumerate (row):
-         if element == 'k': king_location = (row_num, col_num)
-   for piece_moves in allmoves:
-      if king_location in piece_moves: return True
-   return False

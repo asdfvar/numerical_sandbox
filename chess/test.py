@@ -9,8 +9,8 @@ state = state.State ()
 white_moves.move_white (state, (1,4), (3,4))
 print (state)
 
-#print (str (white_moves ((1, 5))))
+new_state = state.copy ()
+white_moves.move_white (state, (1,2), (3,2))
 
-#keys, moves = state.all_white_moves ()
-#print (keys)
-#print (moves)
+print (state)
+print (new_state)

@@ -1,3 +1,4 @@
+import copy
 import white_moves
 import black_moves
 
@@ -24,3 +25,6 @@ class State:
                display += "| " + str (col) + " "
          display += "|\n+---+---+---+---+---+---+---+---+\n"
       return display
+
+   def copy (self):
+      return copy.deepcopy (self)

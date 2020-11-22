@@ -17,6 +17,10 @@ for itt in range (80):
    position = positions[ind]
    dst = random.choice (moves[ind])
    white_moves.move_white (state, position, dst)
+   num_moves = 0
+   for move in moves:
+      num_moves += len (move)
+   print ("num moves = " + str (num_moves))
    print (state)
 
    # Black move
@@ -25,4 +29,8 @@ for itt in range (80):
    position = positions[ind]
    dst = random.choice (moves[ind])
    black_moves.move_black (state, position, dst)
+   num_moves = 0
+   for move in moves:
+      num_moves += len (move)
+   print ("num moves = " + str (num_moves))
    print (state)
