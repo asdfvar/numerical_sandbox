@@ -1,14 +1,16 @@
 #!/usr/bin/python3
 
-import engine
+import state
+import white_moves
+import black_moves
 
-state = engine.Kernel ()
+state = state.State ()
 
-state.move_white ((1,4), (3,4))
+white_moves.move_white (state, (1,4), (3,4))
 print (state)
 
-print (str (state.white_moves ((1, 5))))
+#print (str (white_moves ((1, 5))))
 
-keys, moves = state.all_white_moves ()
-print (keys)
-print (moves)
+#keys, moves = state.all_white_moves ()
+#print (keys)
+#print (moves)
