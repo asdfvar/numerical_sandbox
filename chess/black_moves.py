@@ -2,8 +2,6 @@ import white_moves
 
 def black_moves (state, src):
    board = state.board
-   bCastleAvailOO = state.bCastleAvailOO
-   bCastleAvailOOO = state.bCastleAvailOOO
    moves = []
    row = src[0]
    col = src[1]
@@ -146,25 +144,21 @@ def black_moves (state, src):
             keys, allmoves = white_moves.all_white_moves (state)
             valid = True
             for piece_moves in allmoves:
-               for lmove in piece_moves:
-                  if lmove == (7, 5): valid = False
-                  if lmove == (7, 6): valid = False
+               if (7, 5) in piece_moves: valid = False
+               if (7, 6) in piece_moves: valid = False
             if valid: moves += ['O-O']
       if state.bCastleAvailOOO:
          if board[7][2] == board[7][3] == 0:
             keys, allmoves = white_moves.all_white_moves (state)
             valid = True
             for piece_moves in allmoves:
-               for lmove in piece_moves:
-                  if lmove == (7, 2): valid = False
-                  if lmove == (7, 3): valid = False
+               if (7, 2) in piece_moves: valid = False
+               if (7, 3) in piece_moves: valid = False
             if valid: moves += ['O-O-O']
    return moves
 
 def all_black_moves (state):
    board = state.board
-   bCastleAvailOO = state.bCastleAvailOO
-   bCastleAvailOOO = state.bCastleAvailOOO
    moves = []
    keys  = []
    for row in range (8):
@@ -222,3 +216,12 @@ def move_black (state, src, dst):
       if dst[1] > 0 and board[dst[0]][dst[1]-1] == 'P':
          en_passant = (5, src[1])
    state.en_passant = en_passant
+
+def black_king_under_threat (state):
+   keys, allmoves = white_moves.all_black_moves (state)
+   for row_num, row in enumerate (state.board):
+      for col_num, element in enumerate (row):
+         if element == 'k': king_location = (row_num, col_num)
+   for piece_moves in allmoves:
+      if king_location in piece_moves: return True
+   return False
