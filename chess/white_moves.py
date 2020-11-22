@@ -146,20 +146,18 @@ def white_moves (state, src):
          if (str (board[row-1][col]) in '0pnbrqk'): moves += [(row-1, col)]
       if state.wCastleAvailOO:
          if board[0][5] == board[0][6] == 0:
-            keys, allmoves = black_moves.all_black_moves (state)
+            pos, allmoves = black_moves.all_black_moves (state)
             valid = True
-            for piece_moves in allmoves:
-               if (0, 5) in piece_moves: valid = False
-               if (0, 6) in piece_moves: valid = False
-            if valid: moves += ['O-O']
+            if (0,5) in allmoves: valid = False
+            if (0,6) in allmoves: valid = False
+            if valid: moves += [(0,6)]
       if state.wCastleAvailOOO:
          if board[0][2] == board[0][3] == 0:
-            keys, allmoves = black_moves.all_black_moves (state)
+            pos, allmoves = black_moves.all_black_moves (state)
             valid = True
-            for piece_moves in allmoves:
-               if (0, 2) in piece_moves: valid = False
-               if (0, 3) in piece_moves: valid = False
-            if valid: moves += ['O-O-O']
+            if (0,2) in allmoves: valid = False
+            if (0,3) in allmoves: valid = False
+            if valid: moves += [(0,2)]
    return moves
 
 def all_white_moves (state):
@@ -187,18 +185,13 @@ def move_white (state, src, dst, promote = 'Q'):
       return
 
    # Perform castling
-   if dst == 'O-O':
-      board[0][6] = 'K'
-      board[0][5] = 'R'
-      board[0][4] = 0
-      board[0][7] = 0
-      return
-   elif dst == 'O-O-O':
-      board[0][2] = 'K'
-      board[0][3] = 'R'
-      board[0][4] = 0
-      board[0][0] = 0
-      return
+   if state.wCastleAvailOO or state.wCastleAvailOOO and board[src[0]][src[1]] == 'K':
+      if dst == (0,6):
+         board[0][5] = 'R'
+         board[0][7] = 0
+      elif dst == (0,2):
+         board[0][3] = 'R'
+         board[0][0] = 0
 
    # Disable castling if the king or either of the rooks have moved
    if src == (0, 0) and board[src[0]][src[1]] == 'R':
@@ -209,7 +202,7 @@ def move_white (state, src, dst, promote = 'Q'):
       state.wCastleAvailOO  = False
       state.wCastleAvailOOO = False
 
-   # Perform a generic move
+   # Perform the move
    board[dst[0]][dst[1]] = board[src[0]][src[1]]
    board[src[0]][src[1]] = 0
 
