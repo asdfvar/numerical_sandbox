@@ -46,86 +46,125 @@ def white_moves (state, src):
    elif piece == 'B':
       if row < 7 and col < 7:
          step = 1
-         while (row + step < 8 and col + step < 8 and str (board[row+step][col+step]) in '0pnbrqk'):
+         while (row + step < 8 and col + step < 8 and board[row+step][col+step] == 0):
             moves += [(row+step, col+step)]
             step += 1
+         if (row + step < 8 and col + step < 8 and str (board[row+step][col+step]) in '0pnbrqk'):
+            moves += [(row+step, col+step)]
       if row > 0 and col > 0:
          step = 1
-         while (row - step >= 0 and col - step >= 0 and str (board[row-step][col-step]) in '0pnbrqk'):
+         while (row - step >= 0 and col - step >= 0 and board[row-step][col-step] == 0):
             moves += [(row-step, col-step)]
             step += 1
+         if (row - step >= 0 and col - step >= 0 and str (board[row-step][col-step]) in '0pnbrqk'):
+            moves += [(row-step, col-step)]
       if row < 7 and col > 0:
          step = 1
-         while (row + step < 8 and col - step >= 0 and str (board[row+step][col-step]) in '0pnbrqk'):
+         while (row + step < 8 and col - step >= 0 and board[row+step][col-step] == 0):
             moves += [(row+step, col-step)]
             step += 1
+         if (row + step < 8 and col - step >= 0 and str (board[row+step][col-step]) in '0pnbrqk'):
+            moves += [(row+step, col-step)]
       if row > 0 and col < 7:
          step = 1
-         while (row - step >= 0 and col + step < 8 and str (board[row-step][col+step]) in '0pnbrqk'):
+         while (row - step >= 0 and col + step < 8 and board[row-step][col+step] == 0):
             moves += [(row-step, col+step)]
             step += 1
+         if (row - step >= 0 and col + step < 8 and str (board[row-step][col+step]) in '0pnbrqk'):
+            moves += [(row-step, col+step)]
    elif piece == 'R':
       if row < 7:
          step = 1
-         while (row + step < 8 and str (board[row+step][col]) in '0pnbrqk'):
+         while (row + step < 8 and board[row+step][col] == 0):
             moves += [(row+step, col)]
             step += 1
+         if (row + step < 8 and str (board[row+step][col]) in '0pnbrqk'):
+            moves += [(row+step, col)]
       if row > 0:
          step = 1
-         while (row - step >= 0 and str (board[row-step][col]) in '0pnbrqk'):
+         while (row - step >= 0 and board[row-step][col] == 0):
             moves += [(row-step, col)]
             step += 1
+         if (row - step >= 0 and str (board[row-step][col]) in '0pnbrqk'):
+            moves += [(row-step, col)]
       if col < 7:
          step = 1
-         while (col + step < 8 and str (board[row][col+step]) in '0pnbrqk'):
+         while (col + step < 8 and board[row][col+step] == 0):
             moves += [(row, col+step)]
             step += 1
+         if (col + step < 8 and str (board[row][col+step]) in '0pnbrqk'):
+            moves += [(row, col+step)]
       if col > 0:
          step = 1
-         while (col - step >= 0 and str (board[row][col-step]) in '0pnbrqk'):
+         while (col - step >= 0 and board[row][col-step] == 0):
             moves += [(row, col-step)]
             step += 1
+         if (col - step >= 0 and str (board[row][col-step]) in '0pnbrqk'):
+            moves += [(row, col-step)]
+      if row < 7 and col < 7:
+         step = 1
+         while (row + step < 8 and col + step < 8 and board[row+step][col+step] == 0):
+            moves += [(row+step, col+step)]
+            step += 1
+         if (row + step < 8 and col + step < 8 and str (board[row+step][col+step]) in '0pnbrqk'):
+            moves += [(row+step, col+step)]
    elif piece == 'Q':
       if row < 7:
          step = 1
-         while (row + step < 8 and str (board[row+step][col]) in '0pnbrqk'):
+         while (row + step < 8 and board[row+step][col] == 0):
             moves += [(row+step, col)]
             step += 1
+         if (row + step < 8 and str (board[row+step][col]) in '0pnbrqk'):
+            moves += [(row+step, col)]
       if row > 0:
          step = 1
-         while (row - step >= 0 and str (board[row-step][col]) in '0pnbrqk'):
+         while (row - step >= 0 and board[row-step][col] == 0):
             moves += [(row-step, col)]
             step += 1
+         if (row - step >= 0 and str (board[row-step][col]) in '0pnbrqk'):
+            moves += [(row-step, col)]
       if col < 7:
          step = 1
-         while (col + step < 8 and str (board[row][col+step]) in '0pnbrqk'):
+         while (col + step < 8 and board[row][col+step] == 0):
             moves += [(row, col+step)]
             step += 1
+         if (col + step < 8 and str (board[row][col+step]) in '0pnbrqk'):
+            moves += [(row, col+step)]
       if col > 0:
          step = 1
-         while (col - step >= 0 and str (board[row][col-step]) in '0pnbrqk'):
+         while (col - step >= 0 and board[row][col-step] == 0):
             moves += [(row, col-step)]
             step += 1
+         if (col - step >= 0 and str (board[row][col-step]) in '0pnbrqk'):
+            moves += [(row, col-step)]
       if row < 7 and col < 7:
          step = 1
-         while (row + step < 8 and col + step < 8 and str (board[row+step][col+step]) in '0pnbrqk'):
+         while (row + step < 8 and col + step < 8 and board[row+step][col+step] == 0):
             moves += [(row+step, col+step)]
             step += 1
+         if (row + step < 8 and col + step < 8 and str (board[row+step][col+step]) in '0pnbrqk'):
+            moves += [(row+step, col+step)]
       if row > 0 and col > 0:
          step = 1
-         while (row - step >= 0 and col - step >= 0 and str (board[row-step][col-step]) in '0pnbrqk'):
+         while (row - step >= 0 and col - step >= 0 and board[row-step][col-step] == 0):
             moves += [(row-step, col-step)]
             step += 1
+         if (row - step >= 0 and col - step >= 0 and str (board[row-step][col-step]) in '0pnbrqk'):
+            moves += [(row-step, col-step)]
       if row < 7 and col > 0:
          step = 1
-         while (row + step < 8 and col - step >= 0 and str (board[row+step][col-step]) in '0pnbrqk'):
+         while (row + step < 8 and col - step >= 0 and board[row+step][col-step] == 0):
             moves += [(row+step, col-step)]
             step += 1
+         if (row + step < 8 and col - step >= 0 and str (board[row+step][col-step]) in '0pnbrqk'):
+            moves += [(row+step, col-step)]
       if row > 0 and col < 7:
          step = 1
-         while (row - step >= 0 and col + step < 8 and str (board[row-step][col+step]) in '0pnbrqk'):
+         while (row - step >= 0 and col + step < 8 and board[row-step][col+step] == 0):
             moves += [(row-step, col+step)]
             step += 1
+         if (row - step >= 0 and col + step < 8 and str (board[row-step][col+step]) in '0pnbrqk'):
+            moves += [(row-step, col+step)]
    elif piece == 'K':
       if row + 1 < 8:
          if col + 1 < 8:

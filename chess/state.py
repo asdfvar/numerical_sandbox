@@ -22,14 +22,20 @@ class State:
                                 [-0.1, -0.7, -0.4, -0.3, -0.9, -0.0]])
 
    def __str__ (self):
-      display = "+---+---+---+---+---+---+---+---+\n"
+      rowVals = iter ([8, 7, 6, 5, 4, 3, 2, 1])
+      display = "  +---+---+---+---+---+---+---+---+\n"
       for row in self.board[::-1]:
+         display += str (next (rowVals)) + " "
          for col in row:
             if col == 0:
                display += "|   "
             else:
-               display += "| " + str (col) + " "
-         display += "|\n+---+---+---+---+---+---+---+---+\n"
+               if col in 'PNBRQK':
+                  display += "|#" + str (col) + " "
+               else:
+                  display += "|&" + str (col) + " "
+         display += "|\n  +---+---+---+---+---+---+---+---+\n"
+      display += "    a   b   c   d   e   f   g   h"
       return display
 
    def assess (self):
@@ -52,6 +58,11 @@ class State:
       if on_board[1, 5] == 0: value =  np.inf
       
       return value
+
+   def isEnd (self):
+      if self.assess () is  np.inf: return True
+      if self.assess () is -np.inf: return True
+      return False
 
    def copy (self):
       return copy.deepcopy (self)
