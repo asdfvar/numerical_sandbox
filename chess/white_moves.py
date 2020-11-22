@@ -7,12 +7,17 @@ def white_moves (state, src):
    col = src[1]
    piece = board[row][col]
    if piece == 'P':
-      if row == 1 and board[row+2][col] == 0: moves += [(row+2, col)]
       if row < 7 and board[row+1][col] == 0: moves += [(row+1, col)]
+      if row == 1 and board[row+1][col] == 0 and board[row+2][col] == 0: moves += [(row+2, col)]
       if row < 7 and col < 7 and str (board[row+1][col+1]) in 'prnbqk':
          moves += [(row+1, col+1)]
       if row < 7 and col > 0 and str (board[row+1][col-1]) in 'prnbqk':
          moves += [(row+1, col-1)]
+      if state.en_passant is not None:
+         if row+1 == state.en_passant[0] and col+1 == state.en_passant[1]:
+            moves += state.en_passant
+         elif row+1 == state.en_passant[0] and col-1 == state.en_passant[1]:
+            moves += state.en_passant
    elif piece == 'N':
       if row + 2 < 8 and col + 1 < 8:
          if (str (board[row+2][col+1]) in '0pnbrqk'):
@@ -169,14 +174,14 @@ def all_white_moves (state):
             positions.append ((row, col))
    return positions, moves
 
-def move_white (state, src, dst):
+def move_white (state, src, dst, promote = 'Q'):
    board = state.board
    legal_moves = white_moves (state, src)
 
    valid = False
    if len (legal_moves) > 0:
-      for key in legal_moves:
-         if dst == key: valid = True
+      for pos in legal_moves:
+         if dst == pos: valid = True
    if not (valid):
       print ("illegal move " + str (src) + " -> " + str (dst))
       return
@@ -195,10 +200,10 @@ def move_white (state, src, dst):
       board[0][0] = 0
       return
 
-   # Disable castling if the condition is met
-   if src == (0, 0) and state.board[src[0]][src[1]] == 'R':
+   # Disable castling if the king or either of the rooks have moved
+   if src == (0, 0) and board[src[0]][src[1]] == 'R':
       state.wCastleAvailOOO = False
-   elif src == (0, 7) and state.board[src[0]][src[1]] == 'R':
+   elif src == (0, 7) and board[src[0]][src[1]] == 'R':
       state.wCastleAvailOO = False
    if board[src[0]][src[1]] == 'K':
       state.wCastleAvailOO  = False
@@ -207,6 +212,9 @@ def move_white (state, src, dst):
    # Perform a generic move
    board[dst[0]][dst[1]] = board[src[0]][src[1]]
    board[src[0]][src[1]] = 0
+
+   # Promote the pawn if the condition is met
+   if board[7][dst[1]] == 'P': board[7][dst[1]] = promote
 
    # Set the en passant flag if the condition is met
    en_passant = None

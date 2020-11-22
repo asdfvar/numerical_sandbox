@@ -7,12 +7,17 @@ def black_moves (state, src):
    col = src[1]
    piece = board[row][col]
    if piece == 'p':
-      if row == 6 and board[row-2][col] == 0: moves += [(row-2, col)]
       if row > 0 and board[row-1][col] == 0: moves += [(row-1, col)]
+      if row == 6 and board[row-1][col] == 0 and board[row-2][col] == 0: moves += [(row-2, col)]
       if row > 0 and col < 7 and str (board[row-1][col+1]) in 'PRNBQK':
          moves += [(row-1, col+1)]
       if row > 0 and col > 0 and str (board[row-1][col-1]) in 'PRNBQK':
          moves += [(row-1, col-1)]
+      if state.en_passant is not None:
+         if row-1 == state.en_passant[0] and col+1 == state.en_passant[1]:
+            moves += state.en_passant
+         elif row-1 == state.en_passant[0] and col-1 == state.en_passant[1]:
+            moves += state.en_passant
    elif piece == 'n':
       if row + 2 < 8 and col + 1 < 8:
          if (str (board[row+2][col+1]) in '0PNBRQK'):
@@ -169,14 +174,14 @@ def all_black_moves (state):
             positions.append ((row, col))
    return positions, moves
 
-def move_black (state, src, dst):
+def move_black (state, src, dst, promote = 'q'):
    board = state.board
    legal_moves = black_moves (state, src)
 
    valid = False
    if len (legal_moves) > 0:
-      for key in legal_moves:
-         if dst == key: valid = True
+      for pos in legal_moves:
+         if dst == pos: valid = True
    if not (valid):
       print ("illegal move " + str (src) + " -> " + str (dst))
       return
@@ -195,7 +200,7 @@ def move_black (state, src, dst):
       board[7][0] = 0
       return
 
-   # Disable castling if the condition is met
+   # Disable castling if the king or either of the rooks have moved
    if src == (7, 0) and board[src[0]][src[1]] == 'r':
       state.wCastleAvailOOO = False
    elif src == (7, 7) and board[src[0]][src[1]] == 'r':
@@ -207,6 +212,9 @@ def move_black (state, src, dst):
    # Perform a generic move
    board[dst[0]][dst[1]] = board[src[0]][src[1]]
    board[src[0]][src[1]] = 0
+
+   # Promote the pawn if the condition is met
+   if board[0][dst[1]] == 'p': board[0][dst[1]] = promote
 
    # Set the en passant flag if the condition is met
    en_passant = None
