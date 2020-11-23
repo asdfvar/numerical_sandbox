@@ -5,6 +5,7 @@ import state
 import white_moves
 import black_moves
 import convert_position
+import assessment
 import random
 
 random.seed (0)
@@ -22,7 +23,7 @@ for itt in range (80):
    print (str (itt) + ": White moves " + convert_position.coord2basic (position) +
          " --> " + convert_position.coord2basic (dst))
    print (state)
-   print ("Assessment: " + str (state.assess ()))
+   print ("Assessment: " + str (assessment.assess (state)))
    if state.isEnd (): break
    print ()
 
@@ -35,6 +36,6 @@ for itt in range (80):
    print (str (itt) + ": Black moves " + convert_position.coord2basic (position) +
          " --> " + convert_position.coord2basic (dst))
    print (state)
-   print ("Assessment: " + str (state.assess ()))
+   print ("Assessment: " + str (assessment.assess (state)))
    if state.isEnd (): break
    print ()
