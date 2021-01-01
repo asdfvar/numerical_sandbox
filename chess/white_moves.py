@@ -252,7 +252,7 @@ def move_white (state, src, dst, promote = 'Q'):
    en_passant = None
    if board[dst[0]][dst[1]] == 'P' and src[0] == 1 and dst[0] == 3:
       if dst[1] < 7 and board[dst[0]][dst[1]+1] == 'p':
-         en_passant = (2, src[1])
+         en_passant = [(2, src[1])]
       if dst[1] > 0 and board[dst[0]][dst[1]-1] == 'p':
-         en_passant = (2, src[1])
+         en_passant = [(2, src[1])]
    state.en_passant = en_passant

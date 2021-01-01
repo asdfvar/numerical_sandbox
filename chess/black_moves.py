@@ -14,6 +14,7 @@ def black_moves (state, src):
       if row > 0 and col > 0 and str (board[row-1][col-1]) in 'PRNBQK':
          moves += [(row-1, col-1)]
       if state.en_passant is not None:
+         print ("en passant: " + str (en_passant))
          if row-1 == state.en_passant[0] and col+1 == state.en_passant[1]:
             moves += state.en_passant
          elif row-1 == state.en_passant[0] and col-1 == state.en_passant[1]:
@@ -238,7 +239,7 @@ def move_black (state, src, dst, promote = 'q'):
    en_passant = None
    if board[dst[0]][dst[1]] == 'p' and src[0] == 6 and dst[0] == 4:
       if dst[1] < 7 and board[dst[0]][dst[1]+1] == 'P':
-         en_passant = (5, src[1])
+         en_passant = [(5, src[1])]
       if dst[1] > 0 and board[dst[0]][dst[1]-1] == 'P':
-         en_passant = (5, src[1])
+         en_passant = [(5, src[1])]
    state.en_passant = en_passant
