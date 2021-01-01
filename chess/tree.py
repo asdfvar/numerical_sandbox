@@ -51,20 +51,20 @@ if __name__ == "__main__":
    class exampleContent: pass
    content = exampleContent
 
-   node0 = Node (0, content, 0.0)
-   node1 = node0.addNode (content, 1.0)
+   trunk = Node          (0, content, 0.0)
+   node1 = trunk.addNode (content, 1.0)
    node2 = node1.addNode (content, 2.0)
    node3 = node2.addNode (content, 3.0)
 
-   node0.addNode (content, 1.1)
+   trunk.addNode (content, 1.1)
    node1.addNode (content, 2.1)
    node3.addNode (content, 4.1)
    node3.addNode (content, 4.2)
    node3.addNode (content, 4.3)
 
    print ("before pruning:")
-   print (node0)
+   print (trunk)
 
    print ("after pruning:")
-   node0.pruneKeepMin ()
-   print (node0)
+   trunk.pruneKeepMin ()
+   print (trunk)
