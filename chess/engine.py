@@ -7,13 +7,12 @@ import black_moves
 import convert_position
 import assessment
 import tree
-import copy
 
 def move (state, play = 'w', depth = 1):
    trunk = tree.Node (0, state, assessment.assess (state))
    node = trunk
    trunk.addNode (state, assessment.assess (state))
-   add_level (trunk, play, 3)
+   add_level (trunk, play, 4)
    trunk.pruneKeepMax ()
 
 def add_level (node, play, level):
@@ -29,23 +28,24 @@ def add_level (node, play, level):
    for ind in range (len (positions)):
       for piece_move in moves[ind]:
 
-         new_state = copy.deepcopy (state)
+         new_state = state.copy ()
 
          if play == 'w':
             white_moves.move_white (new_state, positions[ind], piece_move)
+            print ("White moves " + convert_position.coord2basic (positions[ind]) +
+                  " --> " + convert_position.coord2basic (piece_move))
          elif play == 'b':
             black_moves.move_black (new_state, positions[ind], piece_move)
-
-         print ("level " + str (level) + ":")
+            print ("Black moves " + convert_position.coord2basic (positions[ind]) +
+                  " --> " + convert_position.coord2basic (piece_move))
          print (new_state)
 
          new_node = node.addNode (new_state, assessment.assess (new_state))
 
-         for subnode in node.nodes:
-            if play == 'w':
-               add_level (new_node, 'b', level-1)
-            elif play == 'b':
-               add_level (new_node, 'w', level-1)
+         if play == 'w':
+            add_level (new_node, 'b', level-1)
+         elif play == 'b':
+            add_level (new_node, 'w', level-1)
 
 # Example
 if __name__ == "__main__":

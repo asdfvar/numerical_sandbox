@@ -224,7 +224,7 @@ def move_white (state, src, dst, promote = 'Q'):
       return
 
    # Perform castling
-   if state.wCastleAvailOO or state.wCastleAvailOOO and board[src[0]][src[1]] == 'K':
+   if (state.wCastleAvailOO or state.wCastleAvailOOO) and board[src[0]][src[1]] == 'K':
       if dst == (0,6):
          board[0][5] = 'R'
          board[0][7] = 0

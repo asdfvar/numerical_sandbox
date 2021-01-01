@@ -210,7 +210,7 @@ def move_black (state, src, dst, promote = 'q'):
       return
 
    # Perform castling
-   if state.bCastleAvailOO or state.bCastleAvailOOO and board[src[0]][src[1]] == 'k':
+   if (state.bCastleAvailOO or state.bCastleAvailOOO) and board[src[0]][src[1]] == 'k':
       if dst == (7,6):
          board[7][5] = 'r'
          board[7][7] = 0

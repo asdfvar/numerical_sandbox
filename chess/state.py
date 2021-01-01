@@ -1,5 +1,4 @@
 import numpy as np
-from numpy import linalg as la
 import copy
 import white_moves
 import black_moves
