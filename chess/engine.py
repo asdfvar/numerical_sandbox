@@ -8,7 +8,7 @@ import convert_position
 import assessment
 import tree
 
-def move (state, play = 'w', depth = 1):
+def move (state, play, depth = 1):
    trunk = tree.Node (0, state, assessment.assess (state))
    node = trunk
    trunk.addNode (state, assessment.assess (state))
@@ -50,10 +50,14 @@ def add_level (node, play, level):
          elif play == 'b':
             add_level (new_node, 'w', level-1)
 
-         # TODO: prune here as appropriate for the starting move color
+         # Prune the node
+         if play == 'w':
+            node.pruneKeepMax ()
+         elif play == 'b':
+            node.pruneKeepMin ()
 
 # Example
 if __name__ == "__main__":
    state = state.State ()
    print (state)
-   move (state, 'w', 3)
+   move (state, 'w', 5)
