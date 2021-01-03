@@ -14,7 +14,6 @@ def black_moves (state, src):
       if row > 0 and col > 0 and str (board[row-1][col-1]) in 'PRNBQK':
          moves += [(row-1, col-1)]
       if state.en_passant is not None:
-         print ("en passant: " + str (en_passant))
          if row-1 == state.en_passant[0] and col+1 == state.en_passant[1]:
             moves += state.en_passant
          elif row-1 == state.en_passant[0] and col-1 == state.en_passant[1]:

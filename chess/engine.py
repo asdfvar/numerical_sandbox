@@ -7,41 +7,42 @@ import black_moves
 import convert_position
 import assessment
 import tree
+import time
 
-def move (state, play, depth = 1):
-   trunk = tree.Node (0, state, assessment.assess (state))
-   node = trunk
-   trunk.addNode (state, assessment.assess (state))
+def move (gameState, play, depth = 1):
+   trunk = tree.Node (0, gameState, assessment.assess (gameState))
    add_level (trunk, play, depth)
    if play == 'w':
       trunk.pruneKeepMax ()
    if play == 'b':
       trunk.pruneKeepMin ()
+   return trunk.nodes[0].contents
 
 def add_level (node, play, level):
    if level <= 0: return
 
-   state = node.contents
+   gameState = node.contents
 
    if play == 'w':
-      positions, moves = white_moves.all_white_moves (state)
+      positions, moves = white_moves.all_white_moves (gameState)
    elif play == 'b':
-      positions, moves = black_moves.all_black_moves (state)
+      positions, moves = black_moves.all_black_moves (gameState)
 
    for ind in range (len (positions)):
       for piece_move in moves[ind]:
 
-         new_state = state.copy ()
+         new_state = gameState.copy ()
 
          if play == 'w':
-            print ("White moves " + convert_position.coord2basic (positions[ind]) +
-                  " --> " + convert_position.coord2basic (piece_move))
+            #print ("White moves " + convert_position.coord2basic (positions[ind]) +
+            #      " --> " + convert_position.coord2basic (piece_move))
             white_moves.move_white (new_state, positions[ind], piece_move)
          elif play == 'b':
-            print ("Black moves " + convert_position.coord2basic (positions[ind]) +
-                  " --> " + convert_position.coord2basic (piece_move))
+            #print ("Black moves " + convert_position.coord2basic (positions[ind]) +
+            #      " --> " + convert_position.coord2basic (piece_move))
             black_moves.move_black (new_state, positions[ind], piece_move)
-         print (new_state)
+         #print (new_state)
+         #time.sleep (0.1)
 
          new_node = node.addNode (new_state, assessment.assess (new_state))
 
@@ -58,6 +59,13 @@ def add_level (node, play, level):
 
 # Example
 if __name__ == "__main__":
-   state = state.State ()
-   print (state)
-   move (state, 'w', 5)
+   gameState = state.State ()
+   print (gameState)
+
+   play = 'w'
+   for ind in range (100):
+      gameState = move (gameState, play, 3)
+      print (ind)
+      print (gameState)
+      if   play == 'w': play = 'b'
+      elif play == 'b': play = 'w'

@@ -44,8 +44,12 @@ class State:
 
       for row in self.board:
          for element in row:
+
+            # Find out which white pieces are on the board
             for ind, piece in enumerate (wpieces):
                if piece == element: on_board[0][ind] += 1
+
+            # Find out which black pieces are on the board
             for ind, piece in enumerate (bpieces):
                if piece == element: on_board[1][ind] += 1
 
