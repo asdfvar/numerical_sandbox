@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import sys
 import numpy as np
 import state
 import white_moves
@@ -11,11 +12,12 @@ import time
 
 def move (gameState, play, depth = 1):
    trunk = tree.Node (0, gameState, assessment.assess (gameState))
+   start_play = play
    add_level (trunk, play, depth)
    if play == 'w':
-      trunk.pruneKeepMax ()
+      trunk.pruneSetMax ()
    if play == 'b':
-      trunk.pruneKeepMin ()
+      trunk.pruneSetMin ()
    return trunk.nodes[0].contents
 
 def add_level (node, play, level):
@@ -53,17 +55,18 @@ def add_level (node, play, level):
 
          # Prune the node
          if play == 'w':
-            node.pruneKeepMax ()
+            node.pruneSetMax ()
          elif play == 'b':
-            node.pruneKeepMin ()
+            node.pruneSetMin ()
 
 # Example
 if __name__ == "__main__":
+   sys.setrecursionlimit (10000)
    gameState = state.State ()
    print (gameState)
 
    play = 'w'
-   for ind in range (100):
+   for ind in range (20):
       gameState = move (gameState, play, 3)
       print (ind)
       print (gameState)

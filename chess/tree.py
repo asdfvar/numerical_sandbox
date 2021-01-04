@@ -14,6 +14,20 @@ class Node:
       self.edge = False
       return newNode
 
+   def pruneSetMin (self):
+      for node in self.nodes:
+         node.pruneSetMin ()
+
+      minValue = float ("inf")
+      minNode = None
+      for node in self.nodes:
+         if node.value < minValue:
+            minValue = node.value
+            minNode = node
+      if minNode is not None:
+         self.nodes = [minNode]
+         self.value = minNode.value
+
    def pruneKeepMin (self):
       for node in self.nodes:
          node.pruneKeepMin ()
@@ -27,9 +41,23 @@ class Node:
       if minNode is not None:
          self.nodes = [minNode]
 
+   def pruneSetMax (self):
+      for node in self.nodes:
+         node.pruneSetMax ()
+
+      maxValue = float ("-inf")
+      maxNode = None
+      for node in self.nodes:
+         if node.value > maxValue:
+            maxValue = node.value
+            maxNode = node
+      if maxNode is not None:
+         self.nodes = [maxNode]
+         self.value = maxNode.value
+
    def pruneKeepMax (self):
       for node in self.nodes:
-         node.pruneKeepMin ()
+         node.pruneKeepMax ()
 
       maxValue = float ("-inf")
       maxNode = None
@@ -66,5 +94,5 @@ if __name__ == "__main__":
    print (trunk)
 
    print ("after pruning:")
-   trunk.pruneKeepMin ()
+   trunk.pruneSetMax ()
    print (trunk)

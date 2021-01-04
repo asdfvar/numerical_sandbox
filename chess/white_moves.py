@@ -101,13 +101,6 @@ def white_moves (state, src):
             step += 1
          if (col - step >= 0 and str (board[row][col-step]) in '0pnbrqk'):
             moves += [(row, col-step)]
-      if row < 7 and col < 7:
-         step = 1
-         while (row + step < 8 and col + step < 8 and board[row+step][col+step] == 0):
-            moves += [(row+step, col+step)]
-            step += 1
-         if (row + step < 8 and col + step < 8 and str (board[row+step][col+step]) in '0pnbrqk'):
-            moves += [(row+step, col+step)]
    elif piece == 'Q':
       if row < 7:
          step = 1
