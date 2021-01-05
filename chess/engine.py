@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
    play = 'w'
    for ind in range (20):
-      gameState = move (gameState, play, 3)
+      gameState = move (gameState, play, 5)
       print (ind)
       print (gameState)
       if   play == 'w': play = 'b'
