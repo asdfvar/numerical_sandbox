@@ -11,7 +11,7 @@ import tree
 import time
 
 def move (gameState, play, depth = 1):
-   trunk = tree.Node (0, gameState, assessment.assess (gameState))
+   trunk = tree.Node (0, [gameState, 0, 0], assessment.assess (gameState))
    start_play = play
    add_level (trunk, play, depth)
    if play == 'w':
@@ -23,7 +23,7 @@ def move (gameState, play, depth = 1):
 def add_level (node, play, level):
    if level <= 0: return
 
-   gameState = node.contents
+   gameState = node.contents[0]
 
    if play == 'w':
       positions, moves = white_moves.all_white_moves (gameState)
@@ -46,7 +46,8 @@ def add_level (node, play, level):
          #print (new_state)
          #time.sleep (0.1)
 
-         new_node = node.addNode (new_state, assessment.assess (new_state))
+         new_node = node.addNode ([new_state, positions[ind], piece_move],
+               assessment.assess (new_state))
 
          if play == 'w':
             add_level (new_node, 'b', level-1)
@@ -66,9 +67,13 @@ if __name__ == "__main__":
    print (gameState)
 
    play = 'w'
-   for ind in range (20):
-      gameState = move (gameState, play, 5)
-      print (ind)
+   for ind in range (80):
+      result = move (gameState, play, 5)
+      gameState = result[0]
+      position  = result[1]
+      movement  = result[2]
+      print (convert_position.coord2basic (position) + " --> " +
+            convert_position.coord2basic (movement))
       print (gameState)
       if   play == 'w': play = 'b'
       elif play == 'b': play = 'w'
