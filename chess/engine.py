@@ -8,7 +8,6 @@ import black_moves
 import convert_position
 import assessment
 import tree
-import time
 
 def move (gameState, play, depth = 1):
    trunk = tree.Node (0, [gameState, 0, 0], assessment.assess (gameState))
@@ -25,34 +24,30 @@ def add_level (node, play, level):
 
    gameState = node.contents[0]
 
-   if play == 'w':
-      positions, moves = white_moves.all_white_moves (gameState)
-   elif play == 'b':
-      positions, moves = black_moves.all_black_moves (gameState)
+   all_play_moves = {
+      'w': white_moves.all_white_moves,
+      'b': black_moves.all_black_moves}
+
+   positions, moves = all_play_moves[play] (gameState)
+
+   play_moves = {
+      'w': white_moves.move_white,
+      'b': black_moves.move_black}
+
+   if   play == 'w': next_play = 'b'
+   elif play == 'b': next_play = 'w'
 
    for ind in range (len (positions)):
       for piece_move in moves[ind]:
 
          new_state = gameState.copy ()
 
-         if play == 'w':
-            #print ("White moves " + convert_position.coord2basic (positions[ind]) +
-            #      " --> " + convert_position.coord2basic (piece_move))
-            white_moves.move_white (new_state, positions[ind], piece_move)
-         elif play == 'b':
-            #print ("Black moves " + convert_position.coord2basic (positions[ind]) +
-            #      " --> " + convert_position.coord2basic (piece_move))
-            black_moves.move_black (new_state, positions[ind], piece_move)
-         #print (new_state)
-         #time.sleep (0.1)
+         play_moves[play] (new_state, positions[ind], piece_move)
 
          new_node = node.addNode ([new_state, positions[ind], piece_move],
                assessment.assess (new_state))
 
-         if play == 'w':
-            add_level (new_node, 'b', level-1)
-         elif play == 'b':
-            add_level (new_node, 'w', level-1)
+         add_level (new_node, next_play, level-1)
 
          # Prune the node
          if play == 'w':
@@ -67,8 +62,8 @@ if __name__ == "__main__":
    print (gameState)
 
    play = 'w'
-   for ind in range (80):
-      result = move (gameState, play, 5)
+   for ind in range (3):
+      result = move (gameState, play, 3)
       gameState = result[0]
       position  = result[1]
       movement  = result[2]
