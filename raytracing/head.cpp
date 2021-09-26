@@ -1,10 +1,21 @@
 #include "comm.h"
+#include "iostream"
 
 int main (int argc, char *argv[])
 {
-   const int num_stages = 3;
+   std::cout << std::endl;
 
-   comm::COMM Comm (&argc, &argv, num_stages, 1);
+   const int num_stages = 2;
+
+   comm::COMM Comm (&argc, &argv, num_stages, 0);
+
+   std::cout << "test" << std::endl;
+
+   const int array_size = 4;
+
+   for (int rank = 0; rank < array_size; rank++) {
+      Comm.send_to_stage (&rank, sizeof (rank), 1, rank, 0);
+   }
 
    return 0;
 }
