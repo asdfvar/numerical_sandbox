@@ -1,5 +1,7 @@
 #include "comm.h"
 #include "iostream"
+#include "vector.h"
+#include "object.h"
 
 int main (int argc, char *argv[])
 {
