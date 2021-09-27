@@ -14,7 +14,7 @@ template <typename type> class Ball : public Object<type> {
          center = center_in;
       }
 
-      bool intersect (Vector<type> v) {
+      bool intersect (Vector<type> Position, Vector<type> Direction) {
          return true;
       }
 
