@@ -10,8 +10,9 @@ template <typename type> class Object {
 
 template <typename type> class Ball : public Object<type> {
    public:
-      Ball (Vector<type> center_in, float radius) {
+      Ball (Vector<type> center_in, float radius_in) {
          center = center_in;
+         radius = radius_in;
       }
 
       bool intersect (Vector<type> Position, Vector<type> Direction) {
@@ -20,6 +21,7 @@ template <typename type> class Ball : public Object<type> {
 
    private:
       Vector<type> center;
+      float radius;
 };
 
 #endif
