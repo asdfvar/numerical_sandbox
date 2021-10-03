@@ -1,4 +1,6 @@
 #include "comm.h"
+#include "vector.h"
+#include "object.h"
 #include "iostream"
 
 int main (int argc, char *argv[])
