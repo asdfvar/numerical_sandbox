@@ -31,7 +31,7 @@ int main (int argc, char *argv[])
       float window_width  = WINDOW_WIDTH;
       float window_height = WINDOW_HEIGHT;
 
-      // Divide the focal plane array into its components
+      // Divide the focal plane array into as equally-spaced as possible horizontal components
       for (int rank = 0; rank < num_components; rank++) {
          int num_cell_cols = NUM_CELL_COLS;
          int num_cell_rows = q;

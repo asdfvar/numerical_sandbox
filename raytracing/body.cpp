@@ -2,6 +2,7 @@
 #include "vector.h"
 #include "object.h"
 #include "iostream"
+#include "ray.h"
 
 int main (int argc, char *argv[])
 {
@@ -51,12 +52,17 @@ int main (int argc, char *argv[])
       for (int col_cell = 0; col_cell < num_cell_cols; col_cell++) {
 
          // Determine the pointing vector as it passes through the center of the FPA cell
-         float z_offset =  0.5f * window_height - 0.5f - cell_height * row_cell;
-         float y_offset = -0.5f * window_width  + 0.5f + cell_width * col_cell;
+         float z_offset =  0.5f * window_height - cell_height * (0.5f - static_cast<float> (row_cell));
+         float y_offset = -0.5f * window_width  + cell_width  * (0.5f + static_cast<float> (col_cell));
          float x_offset = focal_length;
 
          vec::Vector<float> pointing_vector (x_offset, y_offset, z_offset);
          pointing_vector.normalize ();
+         vec::Vector<float> position (0.0f, 0.0f, 0.0f);
+
+         Ray ray;
+         ray.position  = position;
+         ray.direction = pointing_vector;
 
       }
    }

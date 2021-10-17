@@ -1,5 +1,6 @@
 #ifndef OBJECT_H
 #define OBJECT_H
+
 #include "vector.h"
 
 template <typename type> class Object {
