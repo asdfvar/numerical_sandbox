@@ -10,13 +10,13 @@ class Ray {
       float channels[3];
 };
 
-class NODE {
+template <typename Type> class NODE {
    public:
-      Ray ray;
-      NODE *next;
+      Type obj;
+      NODE<Type> *next;
 };
 
-class Queue {
+template <typename Type> class Queue {
 
    public:
       Queue (void) {
@@ -24,32 +24,32 @@ class Queue {
          queue_size = 0;
       }
 
-      void append (Ray ray) {
-         if (queue_size == 0) front = back = new NODE;
+      void append (Type obj) {
+         if (queue_size == 0) front = back = new NODE<Type>;
          else {
-            back->next = new NODE;
+            back->next = new NODE<Type>;
             back = back->next;
-            back->ray = ray;
+            back->obj = obj;
             queue_size++;
          }
       }
 
-      Ray pop (void) {
-         Ray ray;
-         if (queue_size <= 0) return ray;
+      Type pop (void) {
+         Type obj;
+         if (queue_size <= 0) return obj;
 
-         ray = front->ray;
-         NODE *old = front;
+         obj = front->obj;
+         NODE<Type> *old = front;
          front = front->next;
          delete old;
          queue_size--;
-         return ray;
+         return obj;
       }
 
       ~Queue (void) { while (queue_size > 0) pop (); }
 
    private:
-      NODE *front, *back;
+      NODE<Type> *front, *back;
       int queue_size;
 };
 
