@@ -64,6 +64,8 @@ int main (int argc, char *argv[])
          ray.position  = position;
          ray.direction = pointing_vector;
 
+         Queue queue;
+         queue.append (ray);
       }
    }
 
