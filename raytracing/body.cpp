@@ -46,7 +46,7 @@ int main (int argc, char *argv[])
 //    | /
 //    |/
 //    /
-//    +----> x (look vector)
+//    +----> x (look direction)
 
    for (int row_cell = row_offset, row_ind = 0; row_ind < num_cell_rows; row_cell++, row_ind++) {
       for (int col_cell = 0; col_cell < num_cell_cols; col_cell++) {
@@ -56,12 +56,12 @@ int main (int argc, char *argv[])
          float y_offset = -0.5f * window_width  + cell_width  * (0.5f + static_cast<float> (col_cell));
          float x_offset = focal_length;
 
+         // Define the ray pointing out from the origin
+         Ray ray;
+         vec::Vector<float> position (0.0f, 0.0f, 0.0f);
+         ray.position  = position;
          vec::Vector<float> pointing_vector (x_offset, y_offset, z_offset);
          pointing_vector.normalize ();
-         vec::Vector<float> position (0.0f, 0.0f, 0.0f);
-
-         Ray ray;
-         ray.position  = position;
          ray.direction = pointing_vector;
 
          Queue<Ray> queue;
