@@ -2,6 +2,7 @@
 #define OBJECT_H
 
 #include "vector.h"
+#include <iostream>
 
 template <typename type> class Object {
    public:
@@ -31,6 +32,10 @@ class Ball : public Object<float> {
             length = 0.0f;
          }
          return length <= radius;
+      }
+
+      void print_attr (void) {
+         std::cout << "radius = " << radius << std::endl;
       }
 
    private:

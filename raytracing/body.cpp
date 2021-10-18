@@ -3,6 +3,7 @@
 #include "object.h"
 #include "iostream"
 #include "ray.h"
+#include "queue.h"
 
 int main (int argc, char *argv[])
 {

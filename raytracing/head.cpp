@@ -2,6 +2,7 @@
 #include "iostream"
 #include "vector.h"
 #include "object.h"
+#include "queue.h"
 
 #define NUM_CELL_ROWS 1000
 #define NUM_CELL_COLS 1000
@@ -46,6 +47,11 @@ int main (int argc, char *argv[])
          row_offset += num_cell_rows;
       }
    }
+
+   pQueue<Object<float>> queue;
+   queue.append (new Ball (vec::Vector<float> (10.0f, 0.0f, 0.0f), 4.0f));
+   Ball *thing = static_cast<Ball*> (queue.pop ());
+   thing->print_attr ();
 
    delete[] FPA;
 
