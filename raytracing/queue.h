@@ -74,6 +74,10 @@ template <typename Type> class pQueue {
          return obj;
       }
 
+      int num_el (void) {
+         return queue_size;
+      }
+
       ~pQueue (void) { while (queue_size > 0) pop (); }
 
    private:

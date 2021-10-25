@@ -6,11 +6,14 @@
 
 template <typename type> class Object {
    public:
-      virtual bool intersect (vec::Vector<type> Position, vec::Vector<type> Direction) = 0;
+//      virtual bool intersect (vec::Vector<type> Position, vec::Vector<type> Direction) = 0;
+//      virtual void print_attr (void) { std::cout << "base class" << std::endl; }
 };
 
 class Ball : public Object<float> {
    public:
+      Ball (void) { };
+
       Ball (vec::Vector<float> center_in, float radius_in) {
          center = center_in;
          radius = radius_in;

@@ -39,6 +39,24 @@ int main (int argc, char *argv[])
    const float cell_width  = window_width  / static_cast<float> (num_cell_cols);
    const float cell_height = window_height / static_cast<float> (num_cell_rows);
 
+   // Receive all the objects
+   pQueue<Ball> ballQueue;
+
+   int num_balls;
+   Comm.receive_from_stage<int> (&num_balls, sizeof (num_balls), head_stage, head_rank, 6);
+   Comm.wait_for_receive_from_stage (head_stage, head_rank, 6);
+
+   for (int ball_ind = 0; ball_ind < num_balls; ball_ind++) {
+      Ball *ball = new Ball ();
+      Comm.receive_from_stage<char> ((char*)ball, sizeof (Ball), head_stage, head_rank, 7);
+      Comm.wait_for_receive_from_stage (head_stage, head_rank, 7);
+      ballQueue.append (ball);
+   }
+
+   // test
+   Ball *thing = ballQueue.pop ();
+   thing->print_attr ();
+
    float *FPA = new float [num_cell_rows * num_cell_cols];
 
 //    z   y
