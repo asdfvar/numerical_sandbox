@@ -74,7 +74,7 @@ int main (int argc, char *argv[])
 
    int num_balls = ballQueue.num_el ();
    for (int rank = 0; rank < num_components; rank++) {
-      Comm.send_to_stage<int> (&num_balls, sizeof (num_balls), 1, rank, tag::num_balls);
+      Comm.send_to_stage<int> (&num_balls, 1, 1, rank, tag::num_balls);
       Comm.wait_for_send_to_stage (1, rank, 6);
    }
 
