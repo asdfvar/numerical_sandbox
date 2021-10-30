@@ -4,6 +4,7 @@
 #include "iostream"
 #include "ray.h"
 #include "queue.h"
+#include "tags.h"
 
 int main (int argc, char *argv[])
 {
@@ -22,19 +23,25 @@ int main (int argc, char *argv[])
    float window_width;
    float window_height;
 
-   Comm.receive_from_stage<float> (&focal_length,  sizeof (focal_length),  head_stage, head_rank, 0);
-   Comm.receive_from_stage<float> (&window_width,  sizeof (window_width),  head_stage, head_rank, 1);
-   Comm.receive_from_stage<float> (&window_height, sizeof (window_height), head_stage, head_rank, 2);
-   Comm.receive_from_stage<int>   (&num_cell_rows, sizeof (num_cell_rows), head_stage, head_rank, 3);
-   Comm.receive_from_stage<int>   (&num_cell_cols, sizeof (num_cell_cols), head_stage, head_rank, 4);
-   Comm.receive_from_stage<int>   (&row_offset,    sizeof (row_offset),    head_stage, head_rank, 5);
+   Comm.receive_from_stage<float> (&focal_length,  sizeof (focal_length),
+         head_stage, head_rank, tag::focal_length);
+   Comm.receive_from_stage<float> (&window_width,  sizeof (window_width), 
+         head_stage, head_rank, tag::window_width);
+   Comm.receive_from_stage<float> (&window_height, sizeof (window_height),
+         head_stage, head_rank, tag::window_height);
+   Comm.receive_from_stage<int>   (&num_cell_rows, sizeof (num_cell_rows),
+         head_stage, head_rank, tag::num_cell_rows);
+   Comm.receive_from_stage<int>   (&num_cell_cols, sizeof (num_cell_cols),
+         head_stage, head_rank, tag::num_cell_cols);
+   Comm.receive_from_stage<int>   (&row_offset,    sizeof (row_offset),
+         head_stage, head_rank, tag::row_offset);
 
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, 0);
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, 1);
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, 2);
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, 3);
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, 4);
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, 5);
+   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::focal_length);
+   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::window_width);
+   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::window_height);
+   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::num_cell_rows);
+   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::num_cell_cols);
+   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::row_offset);
 
    const float cell_width  = window_width  / static_cast<float> (num_cell_cols);
    const float cell_height = window_height / static_cast<float> (num_cell_rows);
@@ -43,19 +50,15 @@ int main (int argc, char *argv[])
    pQueue<Ball> ballQueue;
 
    int num_balls;
-   Comm.receive_from_stage<int> (&num_balls, sizeof (num_balls), head_stage, head_rank, 6);
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, 6);
+   Comm.receive_from_stage<int> (&num_balls, sizeof (num_balls), head_stage, head_rank, tag::num_balls);
+   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::num_balls);
 
    for (int ball_ind = 0; ball_ind < num_balls; ball_ind++) {
       Ball *ball = new Ball ();
-      Comm.receive_from_stage<char> ((char*)ball, sizeof (Ball), head_stage, head_rank, 7);
-      Comm.wait_for_receive_from_stage (head_stage, head_rank, 7);
+      Comm.receive_from_stage<char> ((char*)ball, sizeof (*ball), head_stage, head_rank, tag::ball);
+      Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::ball);
       ballQueue.append (ball);
    }
-
-   // test
-   Ball *thing = ballQueue.pop ();
-   thing->print_attr ();
 
    float *FPA = new float [num_cell_rows * num_cell_cols];
 
