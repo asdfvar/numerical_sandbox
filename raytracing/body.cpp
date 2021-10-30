@@ -47,6 +47,8 @@ int main (int argc, char *argv[])
    const float cell_height = window_height / static_cast<float> (num_cell_rows);
 
    // Receive all the objects
+
+   // Receive all the balls from the head process
    pQueue<Ball> ballQueue;
 
    int num_balls;
@@ -55,7 +57,7 @@ int main (int argc, char *argv[])
 
    for (int ball_ind = 0; ball_ind < num_balls; ball_ind++) {
       Ball *ball = new Ball ();
-      Comm.receive_from_stage<char> ((char*)ball, sizeof (*ball), head_stage, head_rank, tag::ball);
+      Comm.receive_from_stage ((char*)ball, sizeof (*ball), head_stage, head_rank, tag::ball);
       Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::ball);
       ballQueue.append (ball);
    }
@@ -78,7 +80,7 @@ int main (int argc, char *argv[])
          float y_offset = -0.5f * window_width  + cell_width  * (0.5f + static_cast<float> (col_cell));
          float x_offset = focal_length;
 
-         // Define the ray pointing out from the origin
+         // Define the ray pointing out from the origin (0,0,0) pointing through the FPA cell
          Ray ray;
          vec::Vector<float> position (0.0f, 0.0f, 0.0f);
          ray.position  = position;
@@ -86,8 +88,29 @@ int main (int argc, char *argv[])
          pointing_vector.normalize ();
          ray.direction = pointing_vector;
 
+         // Append the ray to the queue of rays
          Queue<Ray> queue;
          queue.append (ray);
+
+         // Process the queue of rays until it becomes empty
+         while (queue.num_el () > 0) {
+            ray = queue.pop ();
+
+            pQueue<Ball> holder;
+            while (ballQueue.num_el () > 0) {
+               Ball *ball = ballQueue.pop ();
+               holder.append (ball);
+
+               if (ball->intersect (ray.position, ray.direction)) {
+                  // logic to determine new ray direction and another ray pointing towards each
+                  // light source
+               }
+            }
+
+            // Move the balls back into the original ball queue
+            while (holder.num_el () > 0) ballQueue.append (holder.pop ());
+         }
+
       }
    }
 

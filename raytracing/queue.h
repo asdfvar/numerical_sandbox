@@ -15,6 +15,7 @@ template <typename Type> class Queue {
          queue_size = 0;
       }
 
+      // Append the object to the back of the queue
       void append (Type obj) {
          if (queue_size == 0) front = back = new NODE<Type>;
          else {
@@ -25,6 +26,7 @@ template <typename Type> class Queue {
          queue_size++;
       }
 
+      // Pop the object off the front of the queue
       Type pop (void) {
          Type obj;
          if (queue_size <= 0) return obj;
@@ -35,6 +37,10 @@ template <typename Type> class Queue {
          delete old;
          queue_size--;
          return obj;
+      }
+
+      int num_el (void) {
+         return queue_size;
       }
 
       ~Queue (void) { while (queue_size > 0) pop (); }

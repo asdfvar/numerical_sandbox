@@ -49,7 +49,7 @@ int main (int argc, char *argv[])
 
          Comm.send_to_stage<float> (
                &window_height, sizeof (window_height), 1, rank, tag::window_height);
-         Comm.wait_for_send_to_stage (1, rank, tag_window_height);
+         Comm.wait_for_send_to_stage (1, rank, tag::window_height);
 
          Comm.send_to_stage<int>   (
                &num_cell_rows, sizeof (num_cell_rows), 1, rank, tag::num_cell_rows);
@@ -82,8 +82,7 @@ int main (int argc, char *argv[])
    for (int ball_ind = 0; ball_ind < num_balls; ball_ind++) {
       Ball *ball = static_cast<Ball*> (ballQueue.pop ());
       for (int rank = 0; rank < num_components; rank++) {
-         char *ptr = (char*)ball;
-         Comm.send_to_stage<char> (ptr, sizeof (*ball), 1, rank, tag::ball);
+         Comm.send_to_stage ((char*)ball, sizeof (*ball), 1, rank, tag::ball);
          Comm.wait_for_send_to_stage (1, rank, 7);
       }
    }
