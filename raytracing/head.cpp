@@ -11,15 +11,14 @@
 #define WINDOW_WIDTH  1.0f
 #define WINDOW_HEIGHT 1.0f
 
-#define BODY_MODULE 1
-
 int main (int argc, char *argv[])
 {
    std::cout << std::endl;
 
    const int num_stages = 2;
+   const int this_module = 0;
 
-   comm::COMM Comm (&argc, &argv, num_stages, 0);
+   comm::COMM Comm (&argc, &argv, stage::NUM_MODULES, this_module);
 
    const int num_components = 4;
 
@@ -45,72 +44,72 @@ int main (int argc, char *argv[])
       Comm.send_to_stage<float> (
             &focal_length,
             1,
-            BODY_MODULE,
+            stage::BODY_MODULE,
             rank,
             tag::focal_length);
 
       Comm.wait_for_send_to_stage (
-            BODY_MODULE,
+            stage::BODY_MODULE,
             rank,
             tag::focal_length);
 
       Comm.send_to_stage<float> (
             &window_width,
             1,
-            BODY_MODULE,
+            stage::BODY_MODULE,
             rank,
             tag::window_width);
 
       Comm.wait_for_send_to_stage (
-            BODY_MODULE,
+            stage::BODY_MODULE,
             rank,
             tag::window_width);
 
       Comm.send_to_stage<float> (
             &window_height,
             1,
-            BODY_MODULE,
+            stage::BODY_MODULE,
             rank,
             tag::window_height);
 
       Comm.wait_for_send_to_stage (
-            BODY_MODULE,
+            stage::BODY_MODULE,
             rank,
             tag::window_height);
 
       Comm.send_to_stage<int> (
             &num_cell_rows,
             1,
-            BODY_MODULE,
+            stage::BODY_MODULE,
             rank,
             tag::num_cell_rows);
 
       Comm.wait_for_send_to_stage (
-            BODY_MODULE,
+            stage::BODY_MODULE,
             rank,
             tag::num_cell_rows);
 
       Comm.send_to_stage<int> (
             &num_cell_cols,
             1,
-            BODY_MODULE,
+            stage::BODY_MODULE,
             rank,
             tag::num_cell_cols);
 
       Comm.wait_for_send_to_stage (
-            BODY_MODULE,
+            stage::BODY_MODULE,
             rank,
             tag::num_cell_cols);
 
       Comm.send_to_stage<int> (
             &row_offset,
             1,
-            BODY_MODULE,
+            stage::BODY_MODULE,
             rank,
             tag::row_offset);
 
       Comm.wait_for_send_to_stage (
-            BODY_MODULE,
+            stage::BODY_MODULE,
             rank,
             tag::row_offset);
 
@@ -125,7 +124,7 @@ int main (int argc, char *argv[])
    // Inform the body processes of the number of balls
    int num_balls = ballQueue.num_el ();
    for (int rank = 0; rank < num_components; rank++) {
-      Comm.send_to_stage<int> (&num_balls, 1, 1, rank, tag::num_balls);
+      Comm.send_to_stage<int> (&num_balls, 1, stage::BODY_MODULE, rank, tag::num_balls);
       Comm.wait_for_send_to_stage (1, rank, tag::num_balls);
    }
 
@@ -146,7 +145,7 @@ int main (int argc, char *argv[])
    // Inform the body processes of the number of light sources
    int num_lights = lightQueue.num_el ();
    for (int rank = 0; rank < num_components; rank++) {
-      Comm.send_to_stage<int> (&num_lights, 1, 1, rank, tag::num_lights);
+      Comm.send_to_stage<int> (&num_lights, 1, stage::BODY_MODULE, rank, tag::num_lights);
       Comm.wait_for_send_to_stage (1, rank, tag::num_lights);
    }
 
@@ -154,7 +153,8 @@ int main (int argc, char *argv[])
    for (int light_ind = 0; light_ind < num_lights; light_ind++) {
       vec::Vector<float> light = lightQueue.pop ();
       for (int rank = 0; rank < num_components; rank++) {
-         Comm.send_to_stage ((char*)&light, sizeof (light), 1, rank, tag::light_source);
+         Comm.send_to_stage (
+               (char*)&light, sizeof (light), stage::BODY_MODULE, rank, tag::light_source);
          Comm.wait_for_send_to_stage (1, rank, tag::light_source);
       }
    }

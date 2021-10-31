@@ -1,6 +1,15 @@
 #ifndef TAGS_H
 #define TAGS_H
 
+
+namespace stage {
+   enum {
+      HEAD_MODULE,
+      BODY_MODULE,
+      NUM_MODULES
+   };
+}
+
 namespace tag {
    enum {
       focal_length,

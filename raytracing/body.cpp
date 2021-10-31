@@ -8,13 +8,12 @@
 
 int main (int argc, char *argv[])
 {
-   const int num_stages = 2;
-   const int head_stage = 0;
    const int head_rank  = 0;
+   const int this_module = 1;
 
    const int tiles[2] = {4, 1};
 
-   comm::COMM2D Comm (&argc, &argv, num_stages, 1, tiles);
+   comm::COMM2D Comm (&argc, &argv, stage::NUM_MODULES, this_module, tiles);
 
    int   num_cell_rows;
    int   num_cell_cols;
@@ -24,24 +23,24 @@ int main (int argc, char *argv[])
    float window_height;
 
    Comm.receive_from_stage<float> (&focal_length,  sizeof (focal_length),
-         head_stage, head_rank, tag::focal_length);
+         stage::HEAD_MODULE, head_rank, tag::focal_length);
    Comm.receive_from_stage<float> (&window_width,  sizeof (window_width), 
-         head_stage, head_rank, tag::window_width);
+         stage::HEAD_MODULE, head_rank, tag::window_width);
    Comm.receive_from_stage<float> (&window_height, sizeof (window_height),
-         head_stage, head_rank, tag::window_height);
+         stage::HEAD_MODULE, head_rank, tag::window_height);
    Comm.receive_from_stage<int>   (&num_cell_rows, sizeof (num_cell_rows),
-         head_stage, head_rank, tag::num_cell_rows);
+         stage::HEAD_MODULE, head_rank, tag::num_cell_rows);
    Comm.receive_from_stage<int>   (&num_cell_cols, sizeof (num_cell_cols),
-         head_stage, head_rank, tag::num_cell_cols);
+         stage::HEAD_MODULE, head_rank, tag::num_cell_cols);
    Comm.receive_from_stage<int>   (&row_offset,    sizeof (row_offset),
-         head_stage, head_rank, tag::row_offset);
+         stage::HEAD_MODULE, head_rank, tag::row_offset);
 
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::focal_length);
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::window_width);
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::window_height);
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::num_cell_rows);
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::num_cell_cols);
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::row_offset);
+   Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::focal_length);
+   Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::window_width);
+   Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::window_height);
+   Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::num_cell_rows);
+   Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::num_cell_cols);
+   Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::row_offset);
 
    const float cell_width  = window_width  / static_cast<float> (num_cell_cols);
    const float cell_height = window_height / static_cast<float> (num_cell_rows);
@@ -52,13 +51,13 @@ int main (int argc, char *argv[])
    pQueue<Ball> ballQueue;
 
    int num_balls;
-   Comm.receive_from_stage<int> (&num_balls, 1, head_stage, head_rank, tag::num_balls);
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::num_balls);
+   Comm.receive_from_stage<int> (&num_balls, 1, stage::HEAD_MODULE, head_rank, tag::num_balls);
+   Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::num_balls);
 
    for (int ball_ind = 0; ball_ind < num_balls; ball_ind++) {
       Ball *ball = new Ball ();
-      Comm.receive_from_stage ((char*)ball, sizeof (*ball), head_stage, head_rank, tag::ball);
-      Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::ball);
+      Comm.receive_from_stage ((char*)ball, sizeof (*ball), stage::HEAD_MODULE, head_rank, tag::ball);
+      Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::ball);
       ballQueue.append (ball);
    }
 
@@ -66,13 +65,13 @@ int main (int argc, char *argv[])
    Queue< vec::Vector<float> > lightQueue;
 
    int num_lights;
-   Comm.receive_from_stage<int> (&num_lights, 1, head_stage, head_rank, tag::num_lights);
-   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::num_lights);
+   Comm.receive_from_stage<int> (&num_lights, 1, stage::HEAD_MODULE, head_rank, tag::num_lights);
+   Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::num_lights);
 
    for (int light_ind = 0; light_ind < num_lights; light_ind++) {
       vec::Vector<float> light;
-      Comm.receive_from_stage ((char*)&light, sizeof (light), head_stage, head_rank, tag::light_source);
-      Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::light_source);
+      Comm.receive_from_stage ((char*)&light, sizeof (light), stage::HEAD_MODULE, head_rank, tag::light_source);
+      Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::light_source);
       lightQueue.append (light);
    }
 
