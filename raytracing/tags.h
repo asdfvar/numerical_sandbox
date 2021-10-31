@@ -10,7 +10,9 @@ namespace tag {
       num_cell_cols,
       row_offset,
       num_balls,
-      ball
+      ball,
+      num_lights,
+      light_source
    };
 }
 

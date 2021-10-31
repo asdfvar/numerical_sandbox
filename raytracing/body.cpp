@@ -46,13 +46,13 @@ int main (int argc, char *argv[])
    const float cell_width  = window_width  / static_cast<float> (num_cell_cols);
    const float cell_height = window_height / static_cast<float> (num_cell_rows);
 
-   // Receive all the objects
+   /* Receive all the objects */
 
    // Receive all the balls from the head process
    pQueue<Ball> ballQueue;
 
    int num_balls;
-   Comm.receive_from_stage<int> (&num_balls, sizeof (num_balls), head_stage, head_rank, tag::num_balls);
+   Comm.receive_from_stage<int> (&num_balls, 1, head_stage, head_rank, tag::num_balls);
    Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::num_balls);
 
    for (int ball_ind = 0; ball_ind < num_balls; ball_ind++) {
@@ -60,6 +60,20 @@ int main (int argc, char *argv[])
       Comm.receive_from_stage ((char*)ball, sizeof (*ball), head_stage, head_rank, tag::ball);
       Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::ball);
       ballQueue.append (ball);
+   }
+
+   // Receive all the light sources from the head process
+   Queue< vec::Vector<float> > lightQueue;
+
+   int num_lights;
+   Comm.receive_from_stage<int> (&num_lights, 1, head_stage, head_rank, tag::num_lights);
+   Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::num_lights);
+
+   for (int light_ind = 0; light_ind < num_lights; light_ind++) {
+      vec::Vector<float> light;
+      Comm.receive_from_stage ((char*)&light, sizeof (light), head_stage, head_rank, tag::light_source);
+      Comm.wait_for_receive_from_stage (head_stage, head_rank, tag::light_source);
+      lightQueue.append (light);
    }
 
    float *FPA = new float [num_cell_rows * num_cell_cols];
