@@ -116,7 +116,7 @@ int main (int argc, char *argv[])
 
                if (ball->intersect (ray.position, ray.direction)) {
                   // logic to determine new ray direction and another ray pointing towards each
-                  // light source
+                  // light source with a penalty
                }
             }
 
