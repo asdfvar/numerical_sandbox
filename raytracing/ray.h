@@ -3,11 +3,12 @@
 
 #include "vector.h"
 
-class Ray {
+template <typename type> class Ray {
    public:
-      vec::Vector<float> position;
-      vec::Vector<float> direction;
-      float channels[3];
+      vec::Vector<type> position;
+      vec::Vector<type> direction;
+
+      type intensity[3];
 };
 
 #endif

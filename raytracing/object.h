@@ -1,7 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "vector.h"
+#include "ray.h"
 #include <iostream>
 
 template <typename type> class Object {
@@ -24,16 +24,16 @@ class Ball : public Object<float> {
       // length^2 + ((center - position) * direction)^2 = |center - position|^2
       // with the radius of the ball. The length is the closest distance from the center of the
       // ball to the line projected by the vector.
-      bool intersect (vec::Vector<float> position, vec::Vector<float> direction) {
-         direction.normalize ();
-         vec::Vector<float> pmx = center - position;
-         float length2 = vec::norm2<float> (pmx) / ((pmx * direction) * (pmx * direction));
+      bool intersect (Ray<float> ray) {
+         ray.direction.normalize ();
+         vec::Vector<float> pmx = center - ray.position;
+
+         float length2 = vec::norm2<float> (pmx) / ((pmx * ray.direction) * (pmx * ray.direction));
          float length;
-         if (length2 > 0.000001f) {
-            length = sqrt (length2);
-         } else {
-            length = 0.0f;
-         }
+
+         if (length2 > 0.000001f) length = sqrt (length2);
+         else                     length = 0.0f;
+
          return length <= radius;
       }
 

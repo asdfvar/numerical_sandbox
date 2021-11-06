@@ -85,6 +85,7 @@ int main (int argc, char *argv[])
 //    /
 //    +----> x (look direction)
 
+   // Loop through each FPA cell this process is responsible for
    for (int row_cell = row_offset, row_ind = 0; row_ind < num_cell_rows; row_cell++, row_ind++) {
       for (int col_cell = 0; col_cell < num_cell_cols; col_cell++) {
 
@@ -93,8 +94,8 @@ int main (int argc, char *argv[])
          float y_offset = -0.5f * window_width  + cell_width  * (0.5f + static_cast<float> (col_cell));
          float x_offset = focal_length;
 
-         // Define the ray pointing out from the origin (0,0,0) pointing through the FPA cell
-         Ray ray;
+         // Define the ray pointing out from the origin (0,0,0) and through the FPA cell
+         Ray<float> ray;
          vec::Vector<float> position (0.0f, 0.0f, 0.0f);
          ray.position  = position;
          vec::Vector<float> pointing_vector (x_offset, y_offset, z_offset);
@@ -102,7 +103,7 @@ int main (int argc, char *argv[])
          ray.direction = pointing_vector;
 
          // Append the ray to the queue of rays
-         Queue<Ray> queue;
+         Queue< Ray<float> > queue;
          queue.append (ray);
 
          // Process the queue of rays until it becomes empty
@@ -114,7 +115,7 @@ int main (int argc, char *argv[])
                Ball *ball = ballQueue.pop ();
                holder.append (ball);
 
-               if (ball->intersect (ray.position, ray.direction)) {
+               if (ball->intersect (ray)) {
                   // logic to determine new ray direction and another ray pointing towards each
                   // light source with a penalty
                }
