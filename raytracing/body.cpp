@@ -86,8 +86,10 @@ int main (int argc, char *argv[])
 //    +----> x (look direction)
 
    // Loop through each FPA cell this process is responsible for
-   for (int row_cell = row_offset, row_ind = 0; row_ind < num_cell_rows; row_cell++, row_ind++) {
-      for (int col_cell = 0; col_cell < num_cell_cols; col_cell++) {
+   for (int row_cell = row_offset, row_ind = 0, cell_ind = 0; row_ind < num_cell_rows; row_cell++, row_ind++) {
+      for (int col_cell = 0; col_cell < num_cell_cols; col_cell++, cell_ind++) {
+
+         FPA[cell_ind] = 0.0f;
 
          // Determine the pointing vector as it passes through the center of the FPA cell
          float z_offset =  0.5f * window_height - cell_height * (0.5f - static_cast<float> (row_cell));
@@ -110,14 +112,39 @@ int main (int argc, char *argv[])
          while (queue.num_el () > 0) {
             ray = queue.pop ();
 
+            // TODO: replace these "holders" with "accessors" when that functionality exists
+            // Instantiate a new container to hold the balls popped off the ball queue
             pQueue<Ball> holder;
-            while (ballQueue.num_el () > 0) {
+
+            while (ballQueue.num_el () > 0)
+            {
                Ball *ball = ballQueue.pop ();
                holder.append (ball);
 
-               if (ball->intersect (ray)) {
-                  // logic to determine new ray direction and another ray pointing towards each
-                  // light source with a penalty
+               if (ball->intersect (ray))
+               {
+                  // Get the reflected ray
+                  Ray<float> reflected_ray = ball->reflect (ray);
+
+                  // Instantiate a new container to hold the light sources
+                  Queue< vec::Vector<float> > lightQueue_holder;
+
+                  while (lightQueue.num_el () > 0)
+                  {
+                     vec::Vector <float> light_source = lightQueue.pop ();
+                     lightQueue_holder.append (light_source);
+
+                     // Get the ray pointing toward each light source
+                     Ray<float> ray_toward_light_source = reflected_ray;
+                     ray_toward_light_source.direction = light_source - reflected_ray.position;
+                     ray_toward_light_source.direction.normalize ();
+
+                     // TODO: update the FPA appropriately (need to account any further intersections with other objects and use a proper function to determine intensity with the light source (not just the dot product))
+                     FPA[cell_ind] += ray_toward_light_source.direction * reflected_ray.direction;
+                  }
+
+                  // Move the light sources back into the original light queue
+                  while (lightQueue_holder.num_el () > 0) lightQueue.append (lightQueue_holder.pop ());
                }
             }
 

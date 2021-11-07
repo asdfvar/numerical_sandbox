@@ -32,6 +32,14 @@ namespace vec {
             return vector.x * x + vector.y * y + vector.z * z;
          }
 
+         Vector operator*(const float number) const {
+            Vector new_vector;
+            new_vector.x = x * number;
+            new_vector.y = y * number;
+            new_vector.z = z * number;
+            return new_vector;
+         }
+
          void normalize (void)
          {
             type mag = static_cast<type> (sqrt (x * x + y * y + z * z));
