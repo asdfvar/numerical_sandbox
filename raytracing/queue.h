@@ -44,6 +44,12 @@ template <typename Type> class Queue {
          return queue_size;
       }
 
+      Type access (int index) {
+         NODE<Type> *node = front;
+         for (int ind = 0; ind < index; ind++) node = node->next;
+         return node->obj;
+      }
+
       ~Queue (void) { while (queue_size > 0) pop (); }
 
    private:
@@ -83,6 +89,12 @@ template <typename Type> class pQueue {
 
       int num_el (void) {
          return queue_size;
+      }
+
+      Type *access (int index) {
+         NODE<Type*> *node = front;
+         for (int ind = 0; ind < index; ind++) node = node->next;
+         return node->obj;
       }
 
       ~pQueue (void) { while (queue_size > 0) pop (); }
