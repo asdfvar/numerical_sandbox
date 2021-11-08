@@ -63,7 +63,7 @@ int main (int argc, char *argv[])
    // Build the queue of balls
    pQueue<Ball> ballQueue;
    ballQueue.append (new Ball (vec::Vector<float> (10.0f, 0.0f, 0.0f), 4.0f));
-   ballQueue.append (new Ball (vec::Vector<float> (-10.0f, 0.0f, 0.0f), 7.0f));
+//   ballQueue.append (new Ball (vec::Vector<float> (-10.0f, 0.0f, 0.0f), 7.0f));
 
    // Inform the body processes of the number of balls
    int num_balls = ballQueue.num_el ();
@@ -84,7 +84,7 @@ int main (int argc, char *argv[])
    // Build the queue of light sources
    Queue< vec::Vector<float> > lightQueue;
    lightQueue.append (vec::Vector<float> (10.0f, 0.0f, 10.0f));
-   lightQueue.append (vec::Vector<float> (10.0f, 10.0f, 0.0f));
+//   lightQueue.append (vec::Vector<float> (10.0f, 10.0f, 0.0f));
 
    // Inform the body processes of the number of light sources
    int num_lights = lightQueue.num_el ();
@@ -123,7 +123,7 @@ int main (int argc, char *argv[])
       pFPA += num_cell_cols * num_cell_rows;
    }
 
-   write_grayscale_png (FPA);
+   write_grayscale_png (FPA, NUM_CELL_COLS, NUM_CELL_ROWS, "image.png");
 
    delete[] FPA;
 
