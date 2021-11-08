@@ -4,6 +4,7 @@
 #include "object.h"
 #include "queue.h"
 #include "tags.h"
+#include "write.h"
 
 #define NUM_CELL_ROWS 1000
 #define NUM_CELL_COLS 1000
@@ -121,6 +122,8 @@ int main (int argc, char *argv[])
 
       pFPA += num_cell_cols * num_cell_rows;
    }
+
+   write_grayscale_png (FPA);
 
    delete[] FPA;
 
