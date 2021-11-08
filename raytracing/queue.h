@@ -7,7 +7,6 @@ template <typename Type> class NODE {
       NODE<Type> *next;
 };
 
-// TODO: write an "accessor" method
 template <typename Type> class Queue {
 
    public:

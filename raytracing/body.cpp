@@ -113,7 +113,6 @@ int main (int argc, char *argv[])
          while (queue.num_el () > 0) {
             ray = queue.pop ();
 
-            // TODO: replace these "holders" with "accessors" when that functionality exists
             // Instantiate a new container to hold the balls popped off the ball queue
             pQueue<Ball> holder;
 
