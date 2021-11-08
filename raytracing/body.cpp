@@ -146,6 +146,10 @@ int main (int argc, char *argv[])
       }
    }
 
+   // Send the result back to the head process
+   Comm.send_to_stage (FPA, num_cell_rows * num_cell_cols, stage::HEAD_MODULE, head_rank, tag::fpa);
+   Comm.wait_for_send_to_stage (stage::HEAD_MODULE, head_rank, tag::fpa);
+
    delete[] FPA;
 
    return 0;

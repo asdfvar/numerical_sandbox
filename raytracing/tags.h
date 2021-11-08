@@ -21,7 +21,8 @@ namespace tag {
       num_balls,
       ball,
       num_lights,
-      light_source
+      light_source,
+      fpa
    };
 }
 

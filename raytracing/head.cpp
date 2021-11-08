@@ -22,9 +22,6 @@ int main (int argc, char *argv[])
 
    const int num_components = 4;
 
-   // Define the focal plane array (FPA)
-   float *FPA = new float [NUM_CELL_ROWS * NUM_CELL_COLS];
-
    int q = NUM_CELL_ROWS / num_components;
    int r = NUM_CELL_ROWS % num_components;
    int row_offset = 0;
@@ -41,77 +38,23 @@ int main (int argc, char *argv[])
       int num_cell_rows = q;
       if (rank < r) num_cell_rows += 1;
 
-      Comm.send_to_stage<float> (
-            &focal_length,
-            1,
-            stage::BODY_MODULE,
-            rank,
-            tag::focal_length);
+      Comm.send_to_stage<float> (&focal_length, 1, stage::BODY_MODULE, rank, tag::focal_length);
+      Comm.wait_for_send_to_stage (stage::BODY_MODULE, rank, tag::focal_length);
 
-      Comm.wait_for_send_to_stage (
-            stage::BODY_MODULE,
-            rank,
-            tag::focal_length);
+      Comm.send_to_stage<float> (&window_width, 1, stage::BODY_MODULE, rank, tag::window_width);
+      Comm.wait_for_send_to_stage (stage::BODY_MODULE, rank, tag::window_width);
 
-      Comm.send_to_stage<float> (
-            &window_width,
-            1,
-            stage::BODY_MODULE,
-            rank,
-            tag::window_width);
+      Comm.send_to_stage<float> (&window_height, 1, stage::BODY_MODULE, rank, tag::window_height);
+      Comm.wait_for_send_to_stage (stage::BODY_MODULE, rank, tag::window_height);
 
-      Comm.wait_for_send_to_stage (
-            stage::BODY_MODULE,
-            rank,
-            tag::window_width);
+      Comm.send_to_stage<int> (&num_cell_rows, 1, stage::BODY_MODULE, rank, tag::num_cell_rows);
+      Comm.wait_for_send_to_stage (stage::BODY_MODULE, rank, tag::num_cell_rows);
 
-      Comm.send_to_stage<float> (
-            &window_height,
-            1,
-            stage::BODY_MODULE,
-            rank,
-            tag::window_height);
+      Comm.send_to_stage<int> (&num_cell_cols, 1, stage::BODY_MODULE, rank, tag::num_cell_cols);
+      Comm.wait_for_send_to_stage (stage::BODY_MODULE, rank, tag::num_cell_cols);
 
-      Comm.wait_for_send_to_stage (
-            stage::BODY_MODULE,
-            rank,
-            tag::window_height);
-
-      Comm.send_to_stage<int> (
-            &num_cell_rows,
-            1,
-            stage::BODY_MODULE,
-            rank,
-            tag::num_cell_rows);
-
-      Comm.wait_for_send_to_stage (
-            stage::BODY_MODULE,
-            rank,
-            tag::num_cell_rows);
-
-      Comm.send_to_stage<int> (
-            &num_cell_cols,
-            1,
-            stage::BODY_MODULE,
-            rank,
-            tag::num_cell_cols);
-
-      Comm.wait_for_send_to_stage (
-            stage::BODY_MODULE,
-            rank,
-            tag::num_cell_cols);
-
-      Comm.send_to_stage<int> (
-            &row_offset,
-            1,
-            stage::BODY_MODULE,
-            rank,
-            tag::row_offset);
-
-      Comm.wait_for_send_to_stage (
-            stage::BODY_MODULE,
-            rank,
-            tag::row_offset);
+      Comm.send_to_stage<int> (&row_offset, 1, stage::BODY_MODULE, rank, tag::row_offset);
+      Comm.wait_for_send_to_stage (stage::BODY_MODULE, rank, tag::row_offset);
 
       row_offset += num_cell_rows;
    }
@@ -125,7 +68,7 @@ int main (int argc, char *argv[])
    int num_balls = ballQueue.num_el ();
    for (int rank = 0; rank < num_components; rank++) {
       Comm.send_to_stage<int> (&num_balls, 1, stage::BODY_MODULE, rank, tag::num_balls);
-      Comm.wait_for_send_to_stage (1, rank, tag::num_balls);
+      Comm.wait_for_send_to_stage (stage::BODY_MODULE, rank, tag::num_balls);
    }
 
    // Send the balls to the body processes
@@ -133,7 +76,7 @@ int main (int argc, char *argv[])
       Ball *ball = static_cast<Ball*> (ballQueue.pop ());
       for (int rank = 0; rank < num_components; rank++) {
          Comm.send_to_stage ((char*)ball, sizeof (*ball), 1, rank, tag::ball);
-         Comm.wait_for_send_to_stage (1, rank, tag::ball);
+         Comm.wait_for_send_to_stage (stage::BODY_MODULE, rank, tag::ball);
       }
    }
 
@@ -146,7 +89,7 @@ int main (int argc, char *argv[])
    int num_lights = lightQueue.num_el ();
    for (int rank = 0; rank < num_components; rank++) {
       Comm.send_to_stage<int> (&num_lights, 1, stage::BODY_MODULE, rank, tag::num_lights);
-      Comm.wait_for_send_to_stage (1, rank, tag::num_lights);
+      Comm.wait_for_send_to_stage (stage::BODY_MODULE, rank, tag::num_lights);
    }
 
    // Send the light sources to the body processes
@@ -155,8 +98,28 @@ int main (int argc, char *argv[])
       for (int rank = 0; rank < num_components; rank++) {
          Comm.send_to_stage (
                (char*)&light, sizeof (light), stage::BODY_MODULE, rank, tag::light_source);
-         Comm.wait_for_send_to_stage (1, rank, tag::light_source);
+         Comm.wait_for_send_to_stage (stage::BODY_MODULE, rank, tag::light_source);
       }
+   }
+
+   // Define the focal plane array (FPA)
+   float *FPA = new float [NUM_CELL_ROWS * NUM_CELL_COLS];
+
+   float *pFPA = FPA;
+
+   // Receive the complete FPA from each of the body processes
+   for (int rank = 0; rank < num_components; rank++)
+   {
+      // Divide the focal plane array into as equally-spaced as possible horizontal components
+      int num_cell_cols = NUM_CELL_COLS;
+      int num_cell_rows = q;
+      if (rank < r) num_cell_rows += 1;
+
+      // Receive the FPA chunk for this rank
+      Comm.receive_from_stage<float> (pFPA, num_cell_rows * num_cell_cols, stage::BODY_MODULE, rank, tag::fpa);
+      Comm.wait_for_receive_from_stage (stage::BODY_MODULE, rank, tag::fpa);
+
+      pFPA += num_cell_cols * num_cell_rows;
    }
 
    delete[] FPA;
