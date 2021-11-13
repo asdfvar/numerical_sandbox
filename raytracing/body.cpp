@@ -6,6 +6,8 @@
 #include "queue.h"
 #include "tags.h"
 
+#define TOTAL_NUM_CELL_ROWS 1000
+
 int main (int argc, char *argv[])
 {
    const int head_rank  = 0;
@@ -43,7 +45,7 @@ int main (int argc, char *argv[])
    Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::row_offset);
 
    const float cell_width  = window_width  / static_cast<float> (num_cell_cols);
-   const float cell_height = window_height / static_cast<float> (num_cell_rows);
+   const float cell_height = window_height / static_cast<float> (TOTAL_NUM_CELL_ROWS);
 
    /* Receive all the objects */
 
@@ -93,7 +95,7 @@ int main (int argc, char *argv[])
          FPA[cell_ind] = 0.0f;
 
          // Determine the pointing vector as it passes through the center of the FPA cell
-         float z_offset =  0.5f * window_height - cell_height * (0.5f - static_cast<float> (row_cell));
+         float z_offset =  0.5f * window_height - cell_height * (0.5f + static_cast<float> (row_cell));
          float y_offset = -0.5f * window_width  + cell_width  * (0.5f + static_cast<float> (col_cell));
          float x_offset = focal_length;
 

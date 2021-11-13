@@ -2,6 +2,7 @@
 #define VECTOR_H
 
 #include <cmath>
+#include <iostream>
 
 namespace vec {
    template <typename type> class Vector {
@@ -48,13 +49,16 @@ namespace vec {
             z /= mag;
          }
 
+         void print (void) {
+            std::cout << x << ", " << y << ", " << z << std::endl;
+         }
+
          type x, y, z;
    };
 
    template <typename type> type norm2 (const Vector<type> vector) {
       return vector.x * vector.x + vector.y * vector.y + vector.z * vector.z; 
    }
-
 }
 
 #endif

@@ -63,6 +63,7 @@ int main (int argc, char *argv[])
    // Build the queue of balls
    pQueue<Ball> ballQueue;
    ballQueue.append (new Ball (vec::Vector<float> (10.0f, 0.0f, 0.0f), 4.0f));
+   ballQueue.append (new Ball (vec::Vector<float> (10.0f, 3.0f, 0.0f), 4.0f));
 //   ballQueue.append (new Ball (vec::Vector<float> (-10.0f, 0.0f, 0.0f), 7.0f));
 
    // Inform the body processes of the number of balls
@@ -83,7 +84,7 @@ int main (int argc, char *argv[])
 
    // Build the queue of light sources
    Queue< vec::Vector<float> > lightQueue;
-   lightQueue.append (vec::Vector<float> (10.0f, 0.0f, 10.0f));
+   lightQueue.append (vec::Vector<float> (3.0f, 0.0f, 10.0f));
 //   lightQueue.append (vec::Vector<float> (10.0f, 10.0f, 0.0f));
 
    // Inform the body processes of the number of light sources

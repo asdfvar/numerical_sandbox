@@ -25,6 +25,7 @@ class Ball : public Object<float> {
 
       void print_attr (void) {
          std::cout << "radius = " << radius << std::endl;
+         std::cout << "center = " << center.x << ", " << center.y << ", " << center.z << std::endl;
       }
 
    private:

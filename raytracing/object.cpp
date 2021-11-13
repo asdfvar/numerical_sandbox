@@ -1,4 +1,5 @@
 #include "object.h"
+#include <iostream>
 
 // Determine if the vector starting at "position" and pointing in "direction" intersect
 // the ball by comparing the length from the relation:
@@ -11,7 +12,7 @@ bool Ball::intersect (Ray<float> ray)
    ray.direction.normalize ();
    vec::Vector<float> pmx = center - ray.position;
 
-   float length2 = vec::norm2<float> (pmx) / ((pmx * ray.direction) * (pmx * ray.direction));
+   float length2 = vec::norm2<float> (pmx) - ((pmx * ray.direction) * (pmx * ray.direction));
    float length;
 
    if (length2 > 0.000001f) length = sqrt (length2);
