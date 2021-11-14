@@ -108,40 +108,55 @@ int main (int argc, char *argv[])
          ray.direction = pointing_vector;
 
          // Append the ray to the queue of rays
-         Queue< Ray<float> > queue;
-         queue.append (ray);
+         Queue< Ray<float> > ray_queue;
+         ray_queue.append (ray);
 
          // Process the queue of rays until it becomes empty
-         while (queue.num_el () > 0) {
-            ray = queue.pop ();
+         while (ray_queue.num_el () > 0) {
+            ray = ray_queue.pop ();
 
             // Instantiate a new container to hold the balls popped off the ball queue
             pQueue<Ball> holder;
 
+            bool  intersect_ray    = false;
+            float min_distance     = 0.0f;
+            int   nearest_ball_ind = 0;
+
+            // Find which ball intersects this ray
             for (int ball_ind = 0; ball_ind < ballQueue.num_el (); ball_ind++)
             {
                Ball *ball = ballQueue.access (ball_ind);
 
-               if (ball->intersect (ray))
-               {
-                  // Get the reflected ray
-                  Ray<float> reflected_ray = ball->reflect (ray);
-
-                  // Instantiate a new container to hold the light sources
-                  Queue< vec::Vector<float> > lightQueue_holder;
-
-                  for (int light_ind = 0; light_ind < lightQueue.num_el (); light_ind++)
-                  {
-                     vec::Vector <float> light_source = lightQueue.access (light_ind);
-
-                     // Get the ray pointing toward each light source
-                     Ray<float> ray_toward_light_source = reflected_ray;
-                     ray_toward_light_source.direction = light_source - reflected_ray.position;
-                     ray_toward_light_source.direction.normalize ();
-
-                     // TODO: update the FPA appropriately (need to account any further intersections with other objects and use a proper function to determine intensity with the light source (not just the dot product))
-                     FPA[cell_ind] += ray_toward_light_source.direction * reflected_ray.direction;
+               if (ball->intersect (ray)) {
+                  float distance = ball->distance (ray);
+                  if (intersect_ray == false || distance < min_distance) {
+                     min_distance = distance;
+                     nearest_ball_ind = ball_ind;
                   }
+
+                  intersect_ray = true;
+               }
+            }
+
+            if (intersect_ray)
+            {
+               Ball *ball = ballQueue.access (nearest_ball_ind);
+
+               // Get the reflected ray
+               Ray<float> reflected_ray = ball->reflect (ray);
+
+               // Loop through each light source
+               for (int light_ind = 0; light_ind < lightQueue.num_el (); light_ind++)
+               {
+                  vec::Vector <float> light_source = lightQueue.access (light_ind);
+
+                  // Get the ray pointing toward each light source
+                  Ray<float> ray_toward_light_source = reflected_ray;
+                  ray_toward_light_source.direction = light_source - reflected_ray.position;
+                  ray_toward_light_source.direction.normalize ();
+
+                  // TODO: update the FPA appropriately (need to account any further intersections with other objects and use a proper function to determine intensity with the light source (not just the dot product))
+                  FPA[cell_ind] += ray_toward_light_source.direction * reflected_ray.direction;
                }
             }
          }

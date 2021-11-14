@@ -12,13 +12,15 @@ bool Ball::intersect (Ray<float> ray)
    ray.direction.normalize ();
    vec::Vector<float> pmx = center - ray.position;
 
-   float length2 = vec::norm2<float> (pmx) - ((pmx * ray.direction) * (pmx * ray.direction));
+   float length2 = pmx * pmx - ((pmx * ray.direction) * (pmx * ray.direction));
    float length;
 
    if (length2 > 0.000001f) length = sqrt (length2);
    else                     length = 0.0f;
 
-   return length <= radius;
+   // The ray intersects the ball if the nearest point between the ray to the center of the ball
+   // is within the radial distance and the center of the ball is in front of the ray
+   return length <= radius && pmx * ray.direction > 0.0;
 }
 
 // Given the ray starting point 'a' and associated pointing direction of unit length 'd', the
@@ -62,4 +64,26 @@ Ray<float> Ball::reflect (Ray<float> incoming_ray)
    reflected_ray.direction = v;
 
    return reflected_ray;
+}
+
+// Given the ray starting point 'a' and associated pointing direction of unit length 'd', the
+// ball center 'c', with radius length 'r':
+// The ray will intersect the ball at point "p = a + d*t" for some value 't'.
+// Then the distance would be norm (p - a) = t
+float Ball::distance (Ray<float> ray)
+{
+   vec::Vector<float> a = ray.position;
+   vec::Vector<float> d = ray.direction; d.normalize ();
+   vec::Vector<float> c = center;
+   float r = radius;
+
+   float B = 2.0 * (d * a - d * c);
+   float C = a * a -  a * c * 2.0 + c * c - r * r;
+   float descriminant = B * B - 4.0 * C;
+
+   float t = 0.5 * (-B - sqrt (descriminant));
+
+   vec::Vector<float> p = a + d * t;
+
+   return t;
 }

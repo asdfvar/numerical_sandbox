@@ -19,11 +19,12 @@ class Ball : public Object<float> {
          radius = radius_in;
       }
 
-      bool intersect (Ray<float> ray);
+      bool  intersect (Ray<float> ray);
+      float distance  (Ray<float> ray);
 
       Ray<float> reflect (Ray<float> ray);
 
-      void print_attr (void) {
+      void print (void) {
          std::cout << "radius = " << radius << std::endl;
          std::cout << "center = " << center.x << ", " << center.y << ", " << center.z << std::endl;
       }

@@ -24,7 +24,7 @@ BODY: $(BODY_OBJS)
 
 clean:
 	cd ../gpnc/comm/ && $(MAKE) -f comm.mk clean
-	rm -f $(HEAD_OBJS) $(BODY_OBJS) $(head_exe) $(body_exe)
+	rm -f $(HEAD_OBJS) $(BODY_OBJS) $(head_exe) $(body_exe) image.png
 
 %.o: %.cpp
 	$(MPI_CPP) $(INC) -c $^
