@@ -62,7 +62,7 @@ int main (int argc, char *argv[])
 
    // Build the queue of balls
    pQueue<Ball> ballQueue;
-   ballQueue.append (new Ball (vec::Vector<float> (10.0f, -1.0f, 0.0f), 4.0f));
+   ballQueue.append (new Ball (vec::Vector<float> (10.0f, -1.0f, -0.5f), 4.0f));
    ballQueue.append (new Ball (vec::Vector<float> (9.7f,  1.0f, 0.0f), 4.0f));
    ballQueue.append (new Ball (vec::Vector<float> (-10.0f, 0.0f, 0.0f), 7.0f));
 
@@ -105,28 +105,35 @@ int main (int argc, char *argv[])
    }
 
    // Define the focal plane array (FPA)
-   float *FPA = new float [NUM_CELL_ROWS * NUM_CELL_COLS];
+   float *FPA[3];
+   FPA[0] = new float [NUM_CELL_ROWS * NUM_CELL_COLS];
+   FPA[1] = new float [NUM_CELL_ROWS * NUM_CELL_COLS];
+   FPA[2] = new float [NUM_CELL_ROWS * NUM_CELL_COLS];
 
-   float *pFPA = FPA;
+   for (int channel = 0; channel < 3; channel++) {
+      float *pFPA = FPA[channel];
 
-   // Receive the complete FPA from each of the body processes
-   for (int rank = 0; rank < num_components; rank++)
-   {
-      // Divide the focal plane array into as equally-spaced as possible horizontal components
-      int num_cell_cols = NUM_CELL_COLS;
-      int num_cell_rows = q;
-      if (rank < r) num_cell_rows += 1;
+      // Receive the complete FPA from each of the body processes
+      for (int rank = 0; rank < num_components; rank++)
+      {
+         // Divide the focal plane array into as equally-spaced as possible horizontal components
+         int num_cell_cols = NUM_CELL_COLS;
+         int num_cell_rows = q;
+         if (rank < r) num_cell_rows += 1;
 
-      // Receive the FPA chunk for this rank
-      Comm.receive_from_stage<float> (pFPA, num_cell_rows * num_cell_cols, stage::BODY_MODULE, rank, tag::fpa);
-      Comm.wait_for_receive_from_stage (stage::BODY_MODULE, rank, tag::fpa);
+         // Receive the FPA chunk for this rank
+         Comm.receive_from_stage<float> (pFPA, num_cell_rows * num_cell_cols, stage::BODY_MODULE, rank, tag::fpa);
+         Comm.wait_for_receive_from_stage (stage::BODY_MODULE, rank, tag::fpa);
 
-      pFPA += num_cell_cols * num_cell_rows;
+         pFPA += num_cell_cols * num_cell_rows;
+      }
    }
 
    write_grayscale_png (FPA, NUM_CELL_COLS, NUM_CELL_ROWS, "image.png");
 
-   delete[] FPA;
+   delete[] FPA[0];
+   delete[] FPA[1];
+   delete[] FPA[2];
 
    return 0;
 }

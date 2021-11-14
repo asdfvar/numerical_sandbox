@@ -77,7 +77,10 @@ int main (int argc, char *argv[])
       lightQueue.append (light);
    }
 
-   float *FPA = new float [num_cell_rows * num_cell_cols];
+   float *FPA[3];
+   FPA[0] = new float [num_cell_rows * num_cell_cols];
+   FPA[1] = new float [num_cell_rows * num_cell_cols];
+   FPA[2] = new float [num_cell_rows * num_cell_cols];
 
 //    z   y
 //    ^   ^
@@ -92,7 +95,9 @@ int main (int argc, char *argv[])
    {
       for (int col_cell = 0; col_cell < num_cell_cols; col_cell++, cell_ind++)
       {
-         FPA[cell_ind] = 0.0f;
+         FPA[0][cell_ind] = 0.0f;
+         FPA[1][cell_ind] = 0.0f;
+         FPA[2][cell_ind] = 0.0f;
 
          // Determine the pointing vector as it passes through the center of the FPA cell
          float z_offset =  0.5f * window_height - cell_height * (0.5f + static_cast<float> (row_cell));
@@ -156,7 +161,7 @@ int main (int argc, char *argv[])
                   ray_toward_light_source.direction.normalize ();
 
                   // TODO: update the FPA appropriately (need to account any further intersections with other objects and use a proper function to determine intensity with the light source (not just the dot product))
-                  FPA[cell_ind] += ray_toward_light_source.direction * reflected_ray.direction;
+                  FPA[1][cell_ind] += ray_toward_light_source.direction * reflected_ray.direction;
                }
             }
          }
@@ -164,10 +169,14 @@ int main (int argc, char *argv[])
    }
 
    // Send the result back to the head process
-   Comm.send_to_stage (FPA, num_cell_rows * num_cell_cols, stage::HEAD_MODULE, head_rank, tag::fpa);
-   Comm.wait_for_send_to_stage (stage::HEAD_MODULE, head_rank, tag::fpa);
+   for (int channel = 0; channel < 3; channel++) {
+      Comm.send_to_stage (FPA[channel], num_cell_rows * num_cell_cols, stage::HEAD_MODULE, head_rank, tag::fpa);
+      Comm.wait_for_send_to_stage (stage::HEAD_MODULE, head_rank, tag::fpa);
+   }
 
-   delete[] FPA;
+   delete[] FPA[0];
+   delete[] FPA[1];
+   delete[] FPA[2];
 
    return 0;
 }
