@@ -87,3 +87,35 @@ float Ball::distance (Ray<float> ray)
 
    return t;
 }
+
+template <typename type>
+void Object<type>::set_color (vec::Vector<type> color_in)
+{
+   color.x = color_in.x;
+   color.y = color_in.y;
+   color.z = color_in.z;
+}
+
+template void Object<float>::set_color (vec::Vector<float> color_in);
+template void Object<double>::set_color (vec::Vector<double> color_in);
+
+template<typename type>
+vec::Vector<type> Object<type>::reflected_color (type gradient)
+{
+   float index_float = gradient * static_cast<float> (color_array_len);
+   int index = static_cast<int> (index_float);
+   if (index > 9) index = 9;
+
+   float remainder = index_float - static_cast<float> (index);
+
+   vec::Vector<type> ray_color;
+
+   ray_color.x = gradient * color.x;
+   ray_color.y = gradient * color.y;
+   ray_color.z = gradient * color.z;
+
+   return ray_color;
+}
+
+template vec::Vector<float> Object<float>::reflected_color (float gradient);
+template vec::Vector<double> Object<double>::reflected_color (double gradient);

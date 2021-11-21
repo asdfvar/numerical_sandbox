@@ -4,17 +4,28 @@
 #include "ray.h"
 #include <iostream>
 
+static const int color_array_len = 21;
+
 template <typename type> class Object {
    public:
-//      virtual bool intersect (vec::Vector<type> Position, vec::Vector<type> Direction) = 0;
-//      virtual void print_attr (void) { std::cout << "base class" << std::endl; }
+      Object (void) {
+         color.x = 1.0f;
+         color.y = 1.0f;
+         color.z = 1.0f;
+      };
+
+      void set_color (vec::Vector<type> color);
+      vec::Vector<type> reflected_color (type gradient);
+
+   private:
+      vec::Vector<type> color;
 };
 
 class Ball : public Object<float> {
    public:
-      Ball (void) { };
+      Ball (void) : Object<float> () { };
 
-      Ball (vec::Vector<float> center_in, float radius_in) {
+      Ball (vec::Vector<float> center_in, float radius_in) : Object<float> () {
          center = center_in;
          radius = radius_in;
       }

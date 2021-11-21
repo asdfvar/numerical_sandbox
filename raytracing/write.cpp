@@ -33,22 +33,20 @@ void write_grayscale_png (float **data, int width, int height, const char *filen
 
    png_bytep png_row_ptr = new png_byte[3*width];
 
-   float max_data_val[3] = {data[0][0], data[1][0], data[2][0]};
-   float min_data_val[3] = {data[0][0], data[1][0], data[2][0]};
    for (int channel = 0; channel < 3; channel++) {
       for (int row = 0, ind = 0; row < height; row++) {
          for (int col = 0; col < width; col++, ind++) {
-            if (data[channel][ind] > max_data_val[channel]) max_data_val[channel] = data[channel][ind];
-            if (data[channel][ind] < min_data_val[channel]) min_data_val[channel] = data[channel][ind];
+            if (data[channel][ind] < 0.0f) data[channel][ind] = 0.0f;
+            if (data[channel][ind] > 1.0f) data[channel][ind] = 1.0f;
          }
       }
    }
 
    for (int row = 0, ind = 0; row < height; row++) {
       for (int col = 0; col < width; col++, ind++) {
-         png_row_ptr[3*col + 0] = (unsigned char)((data[0][ind] - min_data_val[0]) / (max_data_val[0] - min_data_val[0]) * 255.0f);
-         png_row_ptr[3*col + 1] = (unsigned char)((data[1][ind] - min_data_val[1]) / (max_data_val[1] - min_data_val[1]) * 255.0f);
-         png_row_ptr[3*col + 2] = (unsigned char)((data[2][ind] - min_data_val[2]) / (max_data_val[2] - min_data_val[2]) * 255.0f);
+         png_row_ptr[3*col + 0] = (unsigned char)(data[0][ind] * 255.0f + 1);
+         png_row_ptr[3*col + 1] = (unsigned char)(data[1][ind] * 255.0f + 1);
+         png_row_ptr[3*col + 2] = (unsigned char)(data[2][ind] * 255.0f + 1);
       }
       png_write_row (png, png_row_ptr);
    }

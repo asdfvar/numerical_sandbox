@@ -16,12 +16,11 @@ int main (int argc, char *argv[])
 {
    std::cout << std::endl;
 
-   const int num_stages = 2;
    const int this_module = 0;
 
    comm::COMM Comm (&argc, &argv, stage::NUM_MODULES, this_module);
 
-   const int num_components = 4;
+   const int num_components = 7;
 
    int q = NUM_CELL_ROWS / num_components;
    int r = NUM_CELL_ROWS % num_components;
@@ -62,9 +61,9 @@ int main (int argc, char *argv[])
 
    // Build the queue of balls
    pQueue<Ball> ballQueue;
-   ballQueue.append (new Ball (vec::Vector<float> (10.0f, -1.0f, -0.5f), 4.0f));
+//   ballQueue.append (new Ball (vec::Vector<float> (10.0f, -1.0f, -0.5f), 4.0f));
    ballQueue.append (new Ball (vec::Vector<float> (9.7f,  1.0f, 0.0f), 4.0f));
-   ballQueue.append (new Ball (vec::Vector<float> (-10.0f, 0.0f, 0.0f), 7.0f));
+//   ballQueue.append (new Ball (vec::Vector<float> (-10.0f, 0.0f, 0.0f), 7.0f));
 
    // Inform the body processes of the number of balls
    int num_balls = ballQueue.num_el ();
@@ -85,6 +84,7 @@ int main (int argc, char *argv[])
    // Build the queue of light sources
    Queue< vec::Vector<float> > lightQueue;
    lightQueue.append (vec::Vector<float> (3.0f, -10.0f, 10.0f));
+//   lightQueue.append (vec::Vector<float> (-10.0f, 0.0f, 0.0f));
 //   lightQueue.append (vec::Vector<float> (10.0f, 10.0f, 0.0f));
 
    // Inform the body processes of the number of light sources

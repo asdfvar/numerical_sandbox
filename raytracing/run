@@ -3,6 +3,6 @@
 $HOME/local/openmpi/v4.1.1/bin/mpirun \
    -oversubscribe                     \
    -n 1 head.exe  :                   \
-   -n 4 body.exe                      \
+   -n 7 body.exe                      \
 #
 #   --mca orte_base_help_aggregate 0   \

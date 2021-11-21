@@ -5,8 +5,10 @@
 #include "ray.h"
 #include "queue.h"
 #include "tags.h"
+#include <cmath>
 
 #define TOTAL_NUM_CELL_ROWS 1000
+#define PI 3.14159265358979323
 
 int main (int argc, char *argv[])
 {
@@ -125,7 +127,7 @@ int main (int argc, char *argv[])
 
             bool  intersect_ray    = false;
             float min_distance     = 0.0f;
-            int   nearest_ball_ind = 0;
+            int   nearest_obj_ind = 0;
 
             // Find which ball intersects this ray
             for (int ball_ind = 0; ball_ind < ballQueue.num_el (); ball_ind++)
@@ -136,7 +138,7 @@ int main (int argc, char *argv[])
                   float distance = ball->distance (ray);
                   if (intersect_ray == false || distance < min_distance) {
                      min_distance = distance;
-                     nearest_ball_ind = ball_ind;
+                     nearest_obj_ind = ball_ind;
                   }
 
                   intersect_ray = true;
@@ -145,7 +147,7 @@ int main (int argc, char *argv[])
 
             if (intersect_ray)
             {
-               Ball *ball = ballQueue.access (nearest_ball_ind);
+               Ball *ball = ballQueue.access (nearest_obj_ind);
 
                // Get the reflected ray
                Ray<float> reflected_ray = ball->reflect (ray);
@@ -155,13 +157,21 @@ int main (int argc, char *argv[])
                {
                   vec::Vector <float> light_source = lightQueue.access (light_ind);
 
-                  // Get the ray pointing toward each light source
+                  // Get the ray pointing toward this light source
                   Ray<float> ray_toward_light_source = reflected_ray;
                   ray_toward_light_source.direction = light_source - reflected_ray.position;
                   ray_toward_light_source.direction.normalize ();
 
-                  // TODO: update the FPA appropriately (need to account any further intersections with other objects and use a proper function to determine intensity with the light source (not just the dot product))
-                  FPA[1][cell_ind] += ray_toward_light_source.direction * reflected_ray.direction;
+                  // Find the angle between the reflected ray and the ray toward the light source.
+                  // Using u * v = |u|*|v|*cos (theta) and it's assumed |u| = |v| = 1
+                  float udv = ray_toward_light_source.direction * reflected_ray.direction;
+
+                  if (udv < 0.0f) udv = 0.0f;
+                  vec::Vector<float> color = ball->reflected_color (udv);
+
+                  FPA[0][cell_ind] += color.x;
+                  FPA[1][cell_ind] += color.y;
+                  FPA[2][cell_ind] += color.z;
                }
             }
          }
