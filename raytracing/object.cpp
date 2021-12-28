@@ -102,12 +102,6 @@ template void Object<double>::set_color (vec::Vector<double> color_in);
 template<typename type>
 vec::Vector<type> Object<type>::reflected_color (type gradient)
 {
-   float index_float = gradient * static_cast<float> (color_array_len);
-   int index = static_cast<int> (index_float);
-   if (index > 9) index = 9;
-
-   float remainder = index_float - static_cast<float> (index);
-
    vec::Vector<type> ray_color;
 
    ray_color.x = gradient * color.x;
