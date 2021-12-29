@@ -108,9 +108,17 @@ int main (int argc, char *argv[])
    Comm.receive_from_stage<int> (&num_lights, 1, stage::HEAD_MODULE, head_rank, tag::num_lights);
    Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::num_lights);
 
-   for (int light_ind = 0; light_ind < num_lights; light_ind++) {
+   for (int light_ind = 0; light_ind < num_lights; light_ind++)
+   {
       vec::Vector<float> light;
-      Comm.receive_from_stage ((char*)&light, sizeof (light), stage::HEAD_MODULE, head_rank, tag::light_source);
+
+      Comm.receive_from_stage (
+            (char*)&light,
+            sizeof (light),
+            stage::HEAD_MODULE,
+            head_rank,
+            tag::light_source);
+
       Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::light_source);
       lightQueue.append (light);
    }
@@ -129,7 +137,9 @@ int main (int argc, char *argv[])
 //    +----> x (look direction)
 
    // Loop through each FPA cell this process is responsible for
-   for (int row_cell = row_offset, row_ind = 0, cell_ind = 0; row_ind < num_cell_rows; row_cell++, row_ind++)
+   for (int row_cell = row_offset, row_ind = 0, cell_ind = 0;
+         row_ind < num_cell_rows;
+         row_cell++, row_ind++)
    {
       for (int col_cell = 0; col_cell < num_cell_cols; col_cell++, cell_ind++)
       {
@@ -138,8 +148,10 @@ int main (int argc, char *argv[])
          FPA[2][cell_ind] = 0.0f;
 
          // Determine the pointing vector as it passes through the center of the FPA cell
-         float z_offset =  0.5f * window_height - cell_height * (0.5f + static_cast<float> (row_cell));
-         float y_offset = -0.5f * window_width  + cell_width  * (0.5f + static_cast<float> (col_cell));
+         float z_offset =  0.5f * window_height -
+            cell_height * (0.5f + static_cast<float> (row_cell));
+         float y_offset = -0.5f * window_width  +
+            cell_width  * (0.5f + static_cast<float> (col_cell));
          float x_offset = focal_length;
 
          // Define the ray pointing out from the origin (0,0,0) and through the FPA cell
