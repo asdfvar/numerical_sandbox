@@ -20,6 +20,8 @@ namespace tag {
       row_offset,
       num_balls,
       ball,
+      num_triangles,
+      triangle,
       num_lights,
       light_source,
       fpa

@@ -81,6 +81,31 @@ int main (int argc, char *argv[])
       }
    }
 
+   pQueue<Triangle> triangleQueue;
+
+   // Build the queue of triangles
+   vec::Vector<float> corners[3];
+   corners[0].x = 5.0f; corners[0].y = -5.0f; corners[0].z =  0.0f;
+   corners[1].x = 5.1f; corners[1].y =  5.0f; corners[1].z =  2.0f;
+   corners[2].x = 4.9f; corners[2].y =  3.0f; corners[2].z = -1.0f;
+   triangleQueue.append (new Triangle (corners));
+
+   // Inform the body processes of the number of triangles
+   int num_triangles = triangleQueue.num_el ();
+   for (int rank = 0; rank < num_components; rank++) {
+      Comm.send_to_stage<int> (&num_triangles, 1, stage::BODY_MODULE, rank, tag::num_triangles);
+      Comm.wait_for_send_to_stage (stage::BODY_MODULE, rank, tag::num_triangles);
+   }
+
+   // Send the triangles to the body processes
+   for (int triangle_ind = 0; triangle_ind < num_triangles; triangle_ind++) {
+      Triangle *triangle = static_cast<Triangle*> (triangleQueue.pop ());
+      for (int rank = 0; rank < num_components; rank++) {
+         Comm.send_to_stage ((char*)triangle, sizeof (*triangle), 1, rank, tag::triangle);
+         Comm.wait_for_send_to_stage (stage::BODY_MODULE, rank, tag::triangle);
+      }
+   }
+
    // Build the queue of light sources
    Queue< vec::Vector<float> > lightQueue;
    lightQueue.append (vec::Vector<float> (3.0f, -10.0f, 10.0f));

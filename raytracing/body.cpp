@@ -58,11 +58,47 @@ int main (int argc, char *argv[])
    Comm.receive_from_stage<int> (&num_balls, 1, stage::HEAD_MODULE, head_rank, tag::num_balls);
    Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::num_balls);
 
-   for (int ball_ind = 0; ball_ind < num_balls; ball_ind++) {
+   for (int ball_ind = 0; ball_ind < num_balls; ball_ind++)
+   {
       Ball *ball = new Ball ();
-      Comm.receive_from_stage ((char*)ball, sizeof (*ball), stage::HEAD_MODULE, head_rank, tag::ball);
+
+      Comm.receive_from_stage (
+            (char*)ball,
+            sizeof (*ball),
+            stage::HEAD_MODULE,
+            head_rank,
+            tag::ball);
+
       Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::ball);
       ballQueue.append (ball);
+   }
+
+   // Receive all the triangles from the head process
+   pQueue<Triangle> triangleQueue;
+
+   int num_triangles;
+
+   Comm.receive_from_stage<int> (&num_triangles,
+         1,
+         stage::HEAD_MODULE,
+         head_rank,
+         tag::num_triangles);
+
+   Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::num_triangles);
+
+   for (int triangle_ind = 0; triangle_ind < num_triangles; triangle_ind++)
+   {
+      Triangle *triangle = new Triangle ();
+
+      Comm.receive_from_stage (
+            (char*)triangle,
+            sizeof (*triangle),
+            stage::HEAD_MODULE,
+            head_rank,
+            tag::triangle);
+
+      Comm.wait_for_receive_from_stage (stage::HEAD_MODULE, head_rank, tag::triangle);
+      triangleQueue.append (triangle);
    }
 
    // Receive all the light sources from the head process
