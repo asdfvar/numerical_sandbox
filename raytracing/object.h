@@ -66,6 +66,9 @@ class Triangle : public Object<float> {
          RHS = normal * a;
       }
 
+      bool  intersect (Ray<float> ray);
+      float distance  (Ray<float> ray);
+
       Ray<float> reflect (Ray<float> ray);
 
    private:

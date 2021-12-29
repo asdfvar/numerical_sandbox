@@ -88,6 +88,28 @@ float Ball::distance (Ray<float> ray)
    return t;
 }
 
+// TODO:
+bool Triangle::intersect (Ray<float> ray)
+{
+   return false;
+}
+
+float Triangle::distance (Ray<float> ray)
+{
+   vec::Vector<float> a = ray.position;
+   vec::Vector<float> d = ray.direction;
+   vec::Vector<float> v = d - normal * (d * normal * 2.0f);
+   v.normalize ();
+
+   // Find the point of intersection p = a + d*t
+   // which happens when p * normal = RHS
+   // for t = (RHS - a * normal) / (d * normal)
+
+   float t = (RHS - a * normal) / (d * normal);
+   vec::Vector<float> p = a + d * t;
+   return t;
+}
+
 Ray<float> Triangle::reflect (Ray<float> incoming_ray)
 {
    vec::Vector<float> a = incoming_ray.position;

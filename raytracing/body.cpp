@@ -173,8 +173,9 @@ int main (int argc, char *argv[])
             bool  intersect_ray   = false;
             float min_distance    = 0.0f;
             int   nearest_obj_ind = 0;
+            int   nearest_obj     = 0;
 
-            // Find which ball intersects this ray
+            // Find which object intersects this ray
             for (int ball_ind = 0; ball_ind < ballQueue.num_el (); ball_ind++)
             {
                Ball *ball = ballQueue.access (ball_ind);
@@ -184,6 +185,23 @@ int main (int argc, char *argv[])
                   if (intersect_ray == false || distance < min_distance) {
                      min_distance = distance;
                      nearest_obj_ind = ball_ind;
+                     nearest_obj = 0;
+                  }
+
+                  intersect_ray = true;
+               }
+            }
+
+            for (int triangle_ind = 0; triangle_ind < triangleQueue.num_el (); triangle_ind++)
+            {
+               Triangle *triangle = triangleQueue.access (triangle_ind);
+
+               if (triangle->intersect (ray)) {
+                  float distance = triangle->distance (ray);
+                  if (intersect_ray == false || distance < min_distance) {
+                     min_distance = distance;
+                     nearest_obj_ind = triangle_ind;
+                     nearest_obj = 1;
                   }
 
                   intersect_ray = true;
@@ -192,10 +210,20 @@ int main (int argc, char *argv[])
 
             if (intersect_ray)
             {
-               Ball *ball = ballQueue.access (nearest_obj_ind);
+               Ball *ball;
+               Triangle *triangle;
+               Ray<float> reflected_ray;
+               if (nearest_obj == 0) {
+                  ball = ballQueue.access (nearest_obj_ind);
 
-               // Get the reflected ray
-               Ray<float> reflected_ray = ball->reflect (ray);
+                  // Get the reflected ray
+                  reflected_ray = ball->reflect (ray);
+               } else if (nearest_obj == 1) {
+                  triangle = triangleQueue.access (nearest_obj_ind);
+
+                  // Get the reflected ray
+                  reflected_ray = triangle->reflect (ray);
+               }
 
                // Loop through each light source
                for (int light_ind = 0; light_ind < lightQueue.num_el (); light_ind++)
@@ -212,7 +240,13 @@ int main (int argc, char *argv[])
                   float udv = ray_toward_light_source.direction * reflected_ray.direction;
 
                   if (udv < 0.0f) udv = 0.0f;
-                  vec::Vector<float> color = ball->reflected_color (udv);
+                  vec::Vector<float> color;
+
+                  if (nearest_obj == 0) {
+                     color = ball->reflected_color (udv);
+                  } else if (nearest_obj == 1) {
+                     color = triangle->reflected_color (udv);
+                  }
 
                   FPA[0][cell_ind] += color.x;
                   FPA[1][cell_ind] += color.y;
