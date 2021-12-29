@@ -46,11 +46,11 @@ class Ball : public Object<float> {
       float radius;
 };
 
-class Surface : public Object<float> {
+class Triangle : public Object<float> {
    public:
-      Surface (void) : Object<float> () { };
+      Triangle (void) : Object<float> () { };
 
-      Surface (vec::Vector<float> corners_in[3]) : Object<float> () {
+      Triangle (vec::Vector<float> corners_in[3]) : Object<float> () {
          corners[0] = corners_in[0];
          corners[1] = corners_in[1];
          corners[2] = corners_in[2];

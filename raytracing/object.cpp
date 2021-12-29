@@ -88,7 +88,7 @@ float Ball::distance (Ray<float> ray)
    return t;
 }
 
-Ray<float> Surface::reflect (Ray<float> incoming_ray)
+Ray<float> Triangle::reflect (Ray<float> incoming_ray)
 {
    vec::Vector<float> a = incoming_ray.position;
    vec::Vector<float> d = incoming_ray.direction;
