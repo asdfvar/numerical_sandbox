@@ -54,10 +54,24 @@ class Surface : public Object<float> {
          corners[0] = corners_in[0];
          corners[1] = corners_in[1];
          corners[2] = corners_in[2];
+
+         vec::Vector<float> a = corners[1] - corners[0];
+         vec::Vector<float> b = corners[2] - corners[0];
+
+         // Normal of this plane
+         normal = b.cross (a);
+         normal.normalize ();
+
+         // Equation of this plane
+         RHS = normal * a;
       }
+
+      Ray<float> reflect (Ray<float> ray);
 
    private:
       vec::Vector<float> corners[3];
+      vec::Vector<float> normal;
+      float RHS;
 };
 
 #endif

@@ -29,8 +29,18 @@ namespace vec {
             return result;
          }
 
+         // Dot product
          type operator*(const Vector& vector) const {
             return vector.x * x + vector.y * y + vector.z * z;
+         }
+
+         // Cross product. Result is this cross other
+         Vector cross (const Vector& vector) {
+            Vector result (
+                  y * vector.z - z * vector.y,
+                  z * vector.x - x * vector.z,
+                  x * vector.y - y * vector.x);
+            return result;
          }
 
          Vector operator*(const float number) const {

@@ -88,6 +88,30 @@ float Ball::distance (Ray<float> ray)
    return t;
 }
 
+Ray<float> Surface::reflect (Ray<float> incoming_ray)
+{
+   vec::Vector<float> a = incoming_ray.position;
+   vec::Vector<float> d = incoming_ray.direction;
+   vec::Vector<float> v = d - normal * (d * normal * 2.0f);
+   v.normalize ();
+
+   // Find the point of intersection p = a + d*t
+   // which happens when p * normal = RHS
+   // for t = (RHS - a * normal) / (d * normal)
+
+   float t = (RHS - a * normal) / (d * normal);
+   vec::Vector<float> p = a + d * t;
+
+   // Preserve the original, incoming ray's attributes into the reflected ray
+   Ray<float> reflected_ray = incoming_ray;
+
+   // Overwrite with the new position and direction of the reflected ray
+   reflected_ray.position  = p;
+   reflected_ray.direction = v;
+
+   return reflected_ray;
+}
+
 template <typename type>
 void Object<type>::set_color (vec::Vector<type> color_in)
 {
