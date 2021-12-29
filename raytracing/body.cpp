@@ -170,9 +170,6 @@ int main (int argc, char *argv[])
          while (ray_queue.num_el () > 0) {
             ray = ray_queue.pop ();
 
-            // Instantiate a new container to hold the balls popped off the ball queue
-            pQueue<Ball> holder;
-
             bool  intersect_ray    = false;
             float min_distance     = 0.0f;
             int   nearest_obj_ind = 0;
